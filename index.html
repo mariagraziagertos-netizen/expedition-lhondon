@@ -7,7 +7,7 @@
 :root{
   --bg:#f3f4f6; --surface:#ffffff; --fg:#14181f; --muted:#5d6573; --line:#d9dde3;
   --river:#bcd3ea; --land:#e8ebef; --accent:#1d4ed8; --hero:#14181f; --hero-fg:#f3f4f6;
-  --jubilee:#7b3fb5; --dlr:#00a4a7; --rail:#c8102e; --bus:#d93a2b; --tube:#0019a8; --win:#0f8a4b; --warn:#b45309;
+  --jubilee:#868f98; --dlr:#00a4a7; --rail:#c8102e; --bus:#d93a2b; --tube:#0019a8; --win:#0f8a4b; --warn:#b45309;
   --cen:#dc241f; --nor:#14181f; --dis:#00782a; --cir:#f2c300; --pic:#003688; --vic:#0098d4; --bak:#b36305; --eli:#6950a1; --ovg:#e86a10;
   --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
   --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -29,7 +29,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .hero{background:var(--hero);color:var(--hero-fg);padding-block:36px 30px}
 .roundel{display:flex;align-items:center;margin-bottom:22px}
 .roundel i{width:44px;height:44px;border-radius:50%;border:9px solid var(--rail);display:block;flex:none}
-.roundel b{margin-left:-50px;background:var(--jubilee);color:#fff;font-family:var(--f-display);font-weight:800;font-size:12px;letter-spacing:.12em;padding:3px 10px;text-transform:uppercase}
+.roundel b{margin-left:-50px;background:var(--tube);color:#fff;font-family:var(--f-display);font-weight:800;font-size:12px;letter-spacing:.12em;padding:3px 10px;text-transform:uppercase}
 .hero h1{font-family:var(--f-display);font-weight:900;font-size:clamp(34px,9vw,64px);line-height:.95;margin:0;letter-spacing:-.02em;text-wrap:balance}
 .hero p{margin:14px 0 0;max-width:56ch;opacity:.85}
 .kpis{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:22px;font-family:var(--f-mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
@@ -187,7 +187,7 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
     <thead><tr><th>#</th><th>Alloggio</th><th>Verso O2</th><th>Verso centro</th><th>A notte</th><th>A testa (2 notti)</th><th class="vcol">Voti</th></tr></thead>
     <tbody id="tbody"></tbody>
   </table></div>
-  <p class="note">I tempi con l'asterisco sono stime calcolate dalla stazione più vicina: controlla l'itinerario su Maps.</p>
+  <p class="note">I tempi con l'asterisco sono stime calcolate sulla rete della mappa: controlla l'itinerario su Maps o Citymapper.</p>
 </div></section>
 
 <section class="block gut" id="voto"><div class="inner">
@@ -258,18 +258,18 @@ const STATIONS={
 "Custom House":[51.5097,0.0277],"Woolwich":[51.4917,0.0717],
 "Dalston Junction":[51.5461,-0.0752],"Haggerston":[51.5387,-0.0757],"Hoxton":[51.5315,-0.0756],"Shoreditch High Street":[51.5233,-0.0752],"Shadwell":[51.5117,-0.0570],"Wapping":[51.5043,-0.0559],"Rotherhithe":[51.5010,-0.0520],"Surrey Quays":[51.4933,-0.0475],"New Cross Gate":[51.4755,-0.0402],
 "Limehouse":[51.5123,-0.0397],"Westferry":[51.5097,-0.0265],"Poplar":[51.5077,-0.0173],"Blackwall":[51.5079,-0.0067],"East India":[51.5093,-0.0021],"Royal Victoria":[51.5091,0.0181],"West India Quay":[51.5070,-0.0203],"Heron Quays":[51.5033,-0.0215],"South Quay":[51.5007,-0.0172],"Crossharbour":[51.4957,-0.0144],"Mudchute":[51.4907,-0.0146],"Island Gardens":[51.4875,-0.0101],"Cutty Sark":[51.4826,-0.0096],"Greenwich":[51.4781,-0.0149],"Deptford Bridge":[51.4740,-0.0216],"Lewisham":[51.4657,-0.0142],"All Saints":[51.5107,-0.0130],"Devons Road":[51.5222,-0.0174],"Bow Church":[51.5276,-0.0208],"Pudding Mill Lane":[51.5343,-0.0139],
-"Blackheath":[51.4659,0.0090],"Deptford":[51.4789,-0.0262],"Maze Hill":[51.4826,0.0030],"Westcombe Park":[51.4842,0.0181],"Charlton":[51.4866,0.0313]
+"Caledonian Road":[51.5481,-0.1188],"Holloway Road":[51.5527,-0.1129],"Arsenal":[51.5586,-0.1059],"Finsbury Park":[51.5642,-0.1065],"Essex Road":[51.5407,-0.0963],"Canonbury":[51.5486,-0.0920],"Caledonian Road & Barnsbury":[51.5430,-0.1166],"Camden Road":[51.5418,-0.1387],"Camden Town":[51.5392,-0.1426],"Mornington Crescent":[51.5343,-0.1387],"Dalston Kingsland":[51.5481,-0.0757],"Hackney Central":[51.5471,-0.0560],"Homerton":[51.5469,-0.0423],"Hackney Wick":[51.5434,-0.0249],"Blackheath":[51.4659,0.0090],"Deptford":[51.4789,-0.0262],"Maze Hill":[51.4826,0.0030],"Westcombe Park":[51.4842,0.0181],"Charlton":[51.4866,0.0313]
 };
 const LINES=[
- {id:"rail",name:"Treno",color:"var(--rail)",dash:true,paths:[["Charing Cross","Waterloo","London Bridge","New Cross Gate","Lewisham","Blackheath"],["London Bridge","Deptford","Greenwich","Maze Hill","Westcombe Park","Charlton"]]},
- {id:"ovg",name:"Overground",color:"var(--ovg)",paths:[["Highbury & Islington","Dalston Junction","Haggerston","Hoxton","Shoreditch High Street","Whitechapel","Shadwell","Wapping","Rotherhithe","Canada Water","Surrey Quays","New Cross Gate"]]},
+ {id:"rail",name:"Treno",color:"var(--rail)",dash:true,paths:[["Charing Cross","Waterloo","London Bridge","New Cross Gate","Lewisham","Blackheath"],["London Bridge","Deptford","Greenwich","Maze Hill","Westcombe Park","Charlton"],["Moorgate","Old Street","Essex Road","Highbury & Islington","Finsbury Park"]]},
+ {id:"ovg",name:"Overground",color:"var(--ovg)",paths:[["Camden Road","Caledonian Road & Barnsbury","Highbury & Islington","Canonbury","Dalston Kingsland","Hackney Central","Homerton","Hackney Wick","Stratford"],["Highbury & Islington","Canonbury","Dalston Junction","Haggerston","Hoxton","Shoreditch High Street","Whitechapel","Shadwell","Wapping","Rotherhithe","Canada Water","Surrey Quays","New Cross Gate"]]},
  {id:"eli",name:"Elizabeth",color:"var(--eli)",double:true,paths:[["Paddington","Bond Street","Tottenham Court Road","Farringdon","Liverpool Street","Whitechapel","Canary Wharf","Custom House","Woolwich"],["Liverpool Street","Stratford"]]},
  {id:"cir",name:"Circle e H&C",color:"var(--cir)",paths:[["Baker Street","Great Portland Street","Euston Square","King's Cross St Pancras","Farringdon","Barbican","Moorgate","Liverpool Street","Aldgate","Tower Hill"]]},
  {id:"dis",name:"District",color:"var(--dis)",paths:[["Victoria","St James's Park","Westminster","Embankment","Temple","Blackfriars","Mansion House","Cannon Street","Monument","Tower Hill","Aldgate East","Whitechapel","Stepney Green","Mile End","Bow Road","Bromley-by-Bow","West Ham"]]},
  {id:"bak",name:"Bakerloo",color:"var(--bak)",paths:[["Elephant & Castle","Lambeth North","Waterloo","Embankment","Charing Cross","Piccadilly Circus","Oxford Circus","Regent's Park","Baker Street"]]},
- {id:"vic",name:"Victoria",color:"var(--vic)",paths:[["Vauxhall","Pimlico","Victoria","Green Park","Oxford Circus","Warren Street","Euston","King's Cross St Pancras","Highbury & Islington"]]},
- {id:"pic",name:"Piccadilly",color:"var(--pic)",paths:[["Hyde Park Corner","Green Park","Piccadilly Circus","Leicester Square","Covent Garden","Holborn","Russell Square","King's Cross St Pancras"]]},
- {id:"nor",name:"Northern",color:"var(--nor)",paths:[["King's Cross St Pancras","Angel","Old Street","Moorgate","Bank","London Bridge","Borough","Elephant & Castle","Kennington"],["Euston","Warren Street","Goodge Street","Tottenham Court Road","Leicester Square","Charing Cross","Embankment","Waterloo","Kennington","Nine Elms","Battersea Power Station"]]},
+ {id:"vic",name:"Victoria",color:"var(--vic)",paths:[["Vauxhall","Pimlico","Victoria","Green Park","Oxford Circus","Warren Street","Euston","King's Cross St Pancras","Highbury & Islington","Finsbury Park"]]},
+ {id:"pic",name:"Piccadilly",color:"var(--pic)",paths:[["Hyde Park Corner","Green Park","Piccadilly Circus","Leicester Square","Covent Garden","Holborn","Russell Square","King's Cross St Pancras","Caledonian Road","Holloway Road","Arsenal","Finsbury Park"]]},
+ {id:"nor",name:"Northern",color:"var(--nor)",paths:[["King's Cross St Pancras","Angel","Old Street","Moorgate","Bank","London Bridge","Borough","Elephant & Castle","Kennington"],["Camden Town","Mornington Crescent","Euston","Warren Street","Goodge Street","Tottenham Court Road","Leicester Square","Charing Cross","Embankment","Waterloo","Kennington","Nine Elms","Battersea Power Station"]]},
  {id:"cen",name:"Central",color:"var(--cen)",paths:[["Marble Arch","Bond Street","Oxford Circus","Tottenham Court Road","Holborn","Chancery Lane","St Paul's","Bank","Liverpool Street","Bethnal Green","Mile End","Stratford"]]},
  {id:"dlr",name:"DLR",color:"var(--dlr)",paths:[["Bank","Shadwell","Limehouse","Westferry","Poplar","Blackwall","East India","Canning Town","Royal Victoria","Custom House"],["Poplar","West India Quay","Canary Wharf","Heron Quays","South Quay","Crossharbour","Mudchute","Island Gardens","Cutty Sark","Greenwich","Deptford Bridge","Lewisham"],["Poplar","All Saints","Devons Road","Bow Church","Pudding Mill Lane","Stratford"]]},
  {id:"jub",name:"Jubilee",color:"var(--jubilee)",wide:true,paths:[["Baker Street","Bond Street","Green Park","Westminster","Waterloo","Southwark","London Bridge","Bermondsey","Canada Water","Canary Wharf","North Greenwich","Canning Town","West Ham","Stratford"]]}
@@ -296,6 +296,43 @@ const r5=n=>Math.max(5,Math.round(n/5)*5);
 function estimate(p,dest){const s=nearest(p),w=walkMin(s.d),direct=km(p,dest);
   if(walkMin(direct)<=w+12)return{min:r5(walkMin(direct)),s,w,walkOnly:true};
   return{min:r5(w+km(s,dest)*1.25/22*60+8),s,w};}
+/* calcolo itinerario sulla rete disegnata (stima) */
+const GRAPH=(()=>{const adj=new Map(),byStation={},key=(s,l,p)=>s+"|"+l+"|"+p;
+  const add=(a,b,w)=>{if(!adj.has(a))adj.set(a,[]);adj.get(a).push({to:b,w});};
+  const pt=n=>({lat:STATIONS[n][0],lng:STATIONS[n][1]});
+  LINES.forEach(l=>l.paths.forEach((p,pi)=>p.forEach((n,i)=>{const k=key(n,l.id,pi);(byStation[n]=byStation[n]||[]).push(k);
+    if(i>0){const m=p[i-1],w=km(pt(n),pt(m))/(l.id==="rail"?45:30)*60+0.8,k2=key(m,l.id,pi);add(k,k2,w);add(k2,k,w);}})));
+  Object.values(byStation).forEach(ks=>ks.forEach(a=>ks.forEach(b=>{if(a!==b)add(a,b,5);})));
+  return{adj,byStation};})();
+const ROUTES=new Map();
+function route(p,dest,destLabel){
+  const ck=p.lat+","+p.lng+">"+dest.lat+","+dest.lng;if(ROUTES.has(ck))return ROUTES.get(ck);
+  const dist=new Map(),prev=new Map(),start=new Map(),done=new Set();
+  let near=ST.map(s=>({s,d:km(p,s)})).filter(x=>x.d<=2).sort((a,b)=>a.d-b.d);
+  const far=!near.length;if(far)near=[{s:nearest(p),d:nearest(p).d}];
+  near.forEach(({s,d})=>GRAPH.byStation[s.name].forEach(k=>{const c=walkMin(d)+4;if(!(dist.get(k)<=c)){dist.set(k,c);start.set(k,{name:s.name,w:walkMin(d)});}}));
+  while(true){let u=null,best=Infinity;for(const [k,v] of dist)if(!done.has(k)&&v<best){best=v;u=k;}
+    if(u==null)break;done.add(u);(GRAPH.adj.get(u)||[]).forEach(e=>{const c=best+e.w;if(c<(dist.get(e.to)??Infinity)){dist.set(e.to,c);prev.set(e.to,u);}});}
+  let bestEnd=null,bestTot=Infinity,endWalk=0;
+  ST.forEach(s=>{const d=km(s,dest);if(d>1.3)return;GRAPH.byStation[s.name].forEach(k=>{const t=(dist.get(k)??Infinity)+walkMin(d);if(t<bestTot){bestTot=t;bestEnd=k;endWalk=walkMin(d);}});});
+  const directWalk=walkMin(km(p,dest));
+  let res;
+  if(!bestEnd||directWalk<=bestTot){res={min:r5(directWalk),steps:[["walk","A piedi",`circa ${directWalk} min fino a ${destLabel}`]],far:false};}
+  else{
+    const chain=[];let k=bestEnd;while(k){chain.unshift(k);k=prev.get(k);}
+    const segs=[];chain.forEach(k=>{const [s,l,pi]=k.split("|");const last=segs[segs.length-1];
+      if(last&&last.l===l&&(last.pi===pi||l==="rail")){if(last.st[last.st.length-1]!==s)last.st.push(s);}else segs.push({l,pi,st:[s]});});
+    const rides=segs.filter(g=>g.st.length>1);
+    const steps=[["walk","A piedi",`${start.get(chain[0]).w} min fino a ${start.get(chain[0]).name}`]];
+    const verso=(x,y)=>{const A=STATIONS[x],B=STATIONS[y],dy=B[0]-A[0],dx=(B[1]-A[1])*0.62;return Math.abs(dx)>Math.abs(dy)?(dx>0?"est":"ovest"):(dy>0?"nord":"sud");};
+    rides.forEach(g=>{const a=g.st[0],b=g.st[g.st.length-1],n=g.st.length-1;
+      steps.push([g.l,LN[g.l].name,`${a} → ${b}, ${n} fermat${n>1?"e":"a"}, verso ${verso(a,b)}`]);});
+    if(endWalk>1)steps.push(["walk","A piedi",`${endWalk} min fino a ${destLabel}`]);
+    res={min:r5(bestTot),steps,far};
+  }
+  ROUTES.set(ck,res);return res;
+}
+const citymapper=(p,dest,name)=>`https://citymapper.com/directions?startcoord=${p.lat},${p.lng}&endcoord=${dest.lat},${dest.lng}&endname=${encodeURIComponent(name)}`;
 
 /* countdown */
 (()=>{const d=Math.ceil((new Date("2027-02-27T00:00:00+01:00")-new Date())/864e5);
@@ -320,15 +357,13 @@ function legHTML(title,p,dest,destName,data){
     <div class="big">${data.t} <small>· ${fmt(dist)} km in linea d'aria</small></div>
     <ul class="steps">${data.steps.map(s=>`<li><span class="ln ${s[0]}">${s[1]}</span><span>${s[2]}</span></li>`).join("")}</ul>
     ${data.alt?`<p class="note">${data.alt}</p>`:""}
-    <div class="links"><a href="${gmaps(p,destName)}" target="_blank" rel="noopener">Itinerario su Maps</a></div></div>`;
-  const e=estimate(p,dest),s=e.s;
-  const steps=e.walkOnly?[["walk","A piedi",`circa ${e.min} min a piedi`]]:
-    [["walk","A piedi",`${e.w} min fino a ${esc(s.name)}`],[s.type,LINE[s.type],`da ${esc(s.name)} (${esc(lineNames(s))}) verso ${dest===O2?"North Greenwich":"Charing Cross"}: controlla cambi su Maps`]];
+    <div class="links"><a href="${gmaps(p,destName)}" target="_blank" rel="noopener">Itinerario su Maps</a><a href="${citymapper(p,dest,dest===O2?"The O2":"Trafalgar Square")}" target="_blank" rel="noopener">Citymapper (anche bus)</a></div></div>`;
+  const label=dest===O2?"The O2":"Trafalgar Square",r=route(p,dest,label),longWalk=r.steps[0][0]==="walk"&&parseInt(r.steps[0][2])>15&&r.steps.length>1;
   return `<div class="leg"><h4>${title}</h4>
-    <div class="big">≈ ${e.min} min* <small>· ${fmt(dist)} km in linea d'aria</small></div>
-    <ul class="steps">${steps.map(x=>`<li><span class="ln ${x[0]}">${x[1]}</span><span>${x[2]}</span></li>`).join("")}</ul>
-    <p class="est">* stima automatica dalla stazione più vicina</p>
-    <div class="links"><a href="${gmaps(p,destName)}" target="_blank" rel="noopener">Itinerario su Maps</a></div></div>`;
+    <div class="big">≈ ${r.min} min* <small>· ${fmt(dist)} km in linea d'aria</small></div>
+    <ul class="steps">${r.steps.map(x=>`<li><span class="ln ${x[0]}">${x[1]}</span><span>${esc(x[2])}</span></li>`).join("")}</ul>
+    <p class="est">* percorso stimato sulla rete della mappa${r.far||longWalk?". La stazione è lontana: su Citymapper trovi anche le opzioni in bus":""}</p>
+    <div class="links"><a href="${gmaps(p,destName)}" target="_blank" rel="noopener">Itinerario su Maps</a><a href="${citymapper(p,dest,label)}" target="_blank" rel="noopener">Citymapper (anche bus)</a></div></div>`;
 }
 function renderCards(){
   const list=items(),cards=document.getElementById("cards");
@@ -381,7 +416,7 @@ async function savePrice(p,raw){
 function counts(){const c={};Object.values(state.votes).forEach(v=>{c[v]=(c[v]||0)+1});return c;}
 function renderTable(){
   const list=items(),c=counts(),vals=list.map(p=>state.prices[p.key]).filter(v=>v>0),mins=list.map(p=>state.prices[p.key]>0?state.prices[p.key]*2/divOf(p):Infinity),minHead=Math.min(...mins);
-  const t=(p,dest,data)=>data?data.t:`≈ ${estimate(p,dest).min} min*`;
+  const t=(p,dest,data)=>data?data.t:`≈ ${route(p,dest,dest===O2?"The O2":"Trafalgar Square").min} min*`;
   document.getElementById("tbody").innerHTML=list.map((p,i)=>{const v=state.prices[p.key],head=v>0?v*2/divOf(p):null;
     return `<tr><td>${i+1}</td><td><a href="#s${esc(p.key)}">${esc(p.name)}</a></td><td>${t(p,O2,p.o2)}</td><td>${t(p,CENTRO,p.cen)}</td>
       <td>${v>0?eur(v):"–"}</td><td class="${head!=null&&head===minHead?"best":""}">${head!=null?eur(head)+(divOf(p)!==3?` (÷${divOf(p)})`:""):"–"}</td><td class="vcol">${c[p.key]||0}</td></tr>`}).join("");
