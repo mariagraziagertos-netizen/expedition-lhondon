@@ -1,4 +1,5 @@
-<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Expedition L’Hondon Feb 27</title>
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<title>Expedition L’Hondon Feb 27</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
@@ -46,7 +47,14 @@ h2.sec::before{content:"";width:22px;height:6px;border-radius:3px;background:var
 .lead{margin:0;color:var(--muted);max-width:62ch}
 .mapbox{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;overflow:hidden;position:relative}
 .mapbox.placing{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
-.mapbox.placing svg{cursor:crosshair}
+.mapbox.placing svg,.mapbox.placing #lmap{cursor:crosshair}
+#lmap{height:460px;border-radius:8px;z-index:0;background:var(--land)}
+@media (max-width:620px){#lmap{height:360px}}
+.lpin{width:30px;height:30px;border-radius:50%;background:var(--fg);color:var(--surface);border:2px solid var(--surface);display:grid;place-items:center;font:800 14px var(--f-display);box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.lpin.added{background:var(--surface);color:var(--fg);border:3px solid var(--fg)}
+.lpin.temp{background:var(--accent);color:var(--surface)}
+.lsq{display:inline-block;transform:translate(-50%,-50%);white-space:nowrap;background:var(--accent);color:var(--surface);font:700 12px var(--f-display);padding:3px 8px;border-radius:5px;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.leaflet-container{font-family:var(--f-body)}
 .placebar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--accent);color:var(--surface);border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:14px;font-weight:600}
 .placebar button{background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:3px 10px;font:600 12px var(--f-body);cursor:pointer}
 svg{display:block;width:100%;height:auto}
@@ -129,6 +137,11 @@ td a:hover{text-decoration:underline}
 .info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 @media (max-width:620px){.info{grid-template-columns:1fr}}
 .subsec{font-family:var(--f-display);font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:8px 0 -2px}
+.leg.night{margin-top:2px}
+.nstat{margin:0;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid var(--line)}
+.nstat.ok{color:var(--win);border-color:color-mix(in srgb,var(--win) 40%,transparent)}
+.nstat.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
+.nshort{font-size:13px;font-weight:600}.nshort.ok{color:var(--win)}.nshort.warn{color:var(--warn)}
 .tip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .tip h3{margin:0 0 4px;font-family:var(--f-display);font-size:16px}
 .tip p{margin:0;font-size:14px;color:var(--muted)}
@@ -157,7 +170,8 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
   <p class="lead">Tocca un numero per aprire la scheda dell'alloggio.</p>
   <div class="mapbox" id="mapbox">
     <div class="placebar" id="placebar" hidden><span>Tocca il punto dove si trova l'alloggio</span><button type="button" id="placecancel">Annulla</button></div>
-    <svg id="map" viewBox="0 0 800 420" role="img" aria-label="Mappa schematica di Londra con gli alloggi, l'O2 e il centro"></svg>
+    <div id="lmap" aria-label="Mappa di Londra con gli alloggi, l'O2 e il centro"></div>
+    <svg hidden id="map" viewBox="0 0 800 420" role="img" aria-label="Mappa schematica di Londra con gli alloggi, l'O2 e il centro"></svg>
     <div class="legend" id="legend"></div>
   </div>
 </div></section>
@@ -171,7 +185,7 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
 
 <section class="block gut" id="aggiungi"><div class="inner">
   <h2 class="sec">Aggiungi un alloggio</h2>
-  <p class="lead">Incolla il link dell'annuncio: nome e numero di persone vengono letti dal link quando possibile. La posizione la indichi tu, toccando la mappa o incollando le coordinate.</p>
+  <p class="lead">Incolla il link dell'annuncio: nome e numero di persone vengono letti dal link quando possibile. Per la posizione scrivi indirizzo o codice postale, oppure tocca la mappa.</p>
   <form class="panel" id="addform" novalidate>
     <div class="form">
       <div class="field full"><label for="f-url">Link dell'annuncio</label>
@@ -182,6 +196,9 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
         <input id="f-total" type="number" inputmode="decimal" min="0" step="1" placeholder="Es. 320"></div>
       <div class="field"><label for="f-div">Persone per dividere</label>
         <select id="f-div"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></div>
+      <div class="field full"><label for="f-addr">Indirizzo o codice postale</label>
+        <div class="locrow"><input id="f-addr" type="text" placeholder="Es. E14 0BG oppure 163 Marsh Wall, London" autocomplete="off"><button type="button" class="btn" id="f-find">Trova sulla mappa</button></div>
+        <small>Su Airbnb l'indirizzo esatto arriva dopo la prenotazione: basta il codice postale o il nome della via.</small></div>
       <div class="field full"><label for="f-loc">Posizione</label>
         <div class="locrow"><input id="f-loc" type="text" placeholder="51.5030, -0.0180" autocomplete="off"><button type="button" class="btn" id="f-pick">Tocca sulla mappa</button></div>
         <small>Da Google Maps: tieni premuto sul punto, copia le coordinate e incollale qui. Va bene anche un link di Google Maps con le coordinate.</small></div>
@@ -196,7 +213,7 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
 <section class="block gut" id="confronto"><div class="inner">
   <h2 class="sec">Confronto</h2>
   <div class="tbl"><table>
-    <thead><tr><th>#</th><th>Alloggio</th><th>Verso O2</th><th>Verso centro</th><th>A notte</th><th>A testa (2 notti)</th><th class="vcol">Voti</th></tr></thead>
+    <thead><tr><th>#</th><th>Alloggio</th><th>Verso O2</th><th>Verso centro</th><th>Rientro di notte</th><th>A notte</th><th>A testa (2 notti)</th><th class="vcol">Voti</th></tr></thead>
     <tbody id="tbody"></tbody>
   </table></div>
   <p class="note">I tempi con l'asterisco sono stime calcolate sulla rete della mappa: controlla l'itinerario su Maps o Citymapper.</p>
@@ -244,6 +261,7 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
 
 <footer class="gut"><div class="inner">Centro = Trafalgar Square / Charing Cross. I due Airbnb iniziali sono posizionati in modo approssimativo: l'indirizzo esatto arriva dopo la prenotazione. Tempi porta a porta indicativi. Tracciati di metro, DLR, Overground, Elizabeth e funivia: dati TfL elaborati da Oliver O'Brien; le linee Southeastern e Great Northern sono disegnate in modo approssimato, da stazione a stazione.</div></footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
 const O2={lat:51.503038,lng:0.0031543};
 const CENTRO={lat:51.5080,lng:-0.1281};
@@ -344,18 +362,22 @@ const GRAPH=(()=>{const adj=new Map(),byStation={},key=(id,l)=>id+"|"+l;
     const d=km(A,B);if(d>0.35)continue;const w=walkMin(d)+4;
     byStation[A.id].forEach(ka=>byStation[B.id].forEach(kb=>{add(ka,kb,w,"walk");add(kb,ka,w,"walk");}));}
   return{adj,byStation};})();
+const crossesRiver=(a,b)=>{const P=q=>[q.lng*0.62,q.lat],A=P(a),B=P(b);
+  const cr=(p,q,r,s)=>{const d=(q[0]-p[0])*(s[1]-r[1])-(q[1]-p[1])*(s[0]-r[0]);if(!d)return false;
+    const t=((r[0]-p[0])*(s[1]-r[1])-(r[1]-p[1])*(s[0]-r[0]))/d,u=((r[0]-p[0])*(q[1]-p[1])-(r[1]-p[1])*(q[0]-p[0]))/d;return t>0&&t<1&&u>0&&u<1;};
+  let n=0;for(let i=1;i<RIVER.length;i++){if(cr(A,B,P({lat:RIVER[i-1][0],lng:RIVER[i-1][1]}),P({lat:RIVER[i][0],lng:RIVER[i][1]})))n++;}return n%2===1;};
 const ROUTES=new Map();
 function route(p,dest,destLabel){
   const ck=p.lat+","+p.lng+">"+dest.lat+","+dest.lng;if(ROUTES.has(ck))return ROUTES.get(ck);
   const dist=new Map(),prev=new Map(),start=new Map(),done=new Set();
-  let near=ST.map(s=>({s,d:km(p,s)})).filter(x=>x.d<=2).sort((a,b)=>a.d-b.d);
+  let near=ST.map(s=>({s,d:km(p,s)})).filter(x=>x.d<=2&&!crossesRiver(p,x.s)).sort((a,b)=>a.d-b.d);
   const far=!near.length;if(far){const n=nearest(p);near=[{s:n,d:n.d}];}
   near.forEach(({s,d})=>GRAPH.byStation[s.id].forEach(k=>{const c=walkMin(d)+4;if(!(dist.get(k)<=c)){dist.set(k,c);start.set(k,{name:s.name,w:walkMin(d)});}}));
   while(true){let u=null,best=Infinity;for(const [k,v] of dist)if(!done.has(k)&&v<best){best=v;u=k;}
     if(u==null)break;done.add(u);(GRAPH.adj.get(u)||[]).forEach(e=>{const c=best+e.w;if(c<(dist.get(e.to)??Infinity)){dist.set(e.to,c);prev.set(e.to,{u,t:e.t});}});}
   let bestEnd=null,bestTot=Infinity,endWalk=0;
-  ST.forEach(s=>{const d=km(s,dest);if(d>1.3)return;GRAPH.byStation[s.id].forEach(k=>{const t=(dist.get(k)??Infinity)+walkMin(d);if(t<bestTot){bestTot=t;bestEnd=k;endWalk=walkMin(d);}});});
-  const directWalk=walkMin(km(p,dest));
+  ST.forEach(s=>{const d=km(s,dest);if(d>1.3||crossesRiver(s,dest))return;GRAPH.byStation[s.id].forEach(k=>{const t=(dist.get(k)??Infinity)+walkMin(d);if(t<bestTot){bestTot=t;bestEnd=k;endWalk=walkMin(d);}});});
+  const directWalk=crossesRiver(p,dest)?Infinity:walkMin(km(p,dest));
   const nm=id=>STBYID[id].name;
   const verso=(x,y)=>{const A=STBYID[x],B=STBYID[y],dy=B.lat-A.lat,dx=(B.lng-A.lng)*0.62;return Math.abs(dx)>Math.abs(dy)?(dx>0?"est":"ovest"):(dy>0?"nord":"sud");};
   let res;
@@ -379,6 +401,32 @@ function route(p,dest,destLabel){
   }
   ROUTES.set(ck,res);return res;
 }
+/* rientro dopo il concerto */
+const NIGHT_OK=new Set(["jub","cen","vic","pic"]);
+const NIGHT_PART={nor:"di notte solo sul ramo via Charing Cross",ovg:"di notte solo la linea Windrush, tra Highbury & Islington e New Cross Gate"};
+const NIGHTS=new Map();
+function nightInfo(p){
+  const ck=p.key+":"+p.lat+","+p.lng;if(NIGHTS.has(ck))return NIGHTS.get(ck);
+  let r=route(O2,{lat:p.lat,lng:p.lng},"l'alloggio"),res;
+  if(p.key==="4"){
+    res={r:{min:25,steps:[["bus","Bus 108","North Greenwich → Blackheath, fermata davanti all'hotel"]]},cls:"ok",short:"Sì, bus 108",
+      status:"Il bus 108 parte dalla stazione dei bus di North Greenwich e ferma davanti all'hotel: viaggia tutta la notte."};
+  }else{
+    const rides=[...new Set(r.steps.map(s=>s[0]).filter(l=>LN[l]))];
+    const no=rides.filter(l=>!NIGHT_OK.has(l)&&!NIGHT_PART[l]),part=rides.filter(l=>NIGHT_PART[l]);
+    if(!rides.length)res={r,cls:"ok",short:"Sì, a piedi",status:"Si torna a piedi."};
+    else if(!no.length&&!part.length)res={r,cls:"ok",short:"Sì, Night Tube",status:"Funziona anche dopo mezzanotte e mezza: il sabato queste linee viaggiano tutta la notte."};
+    else if(!no.length)res={r,cls:"warn",short:"In parte",status:"Dopo mezzanotte e mezza: "+part.map(l=>`${LN[l].name} ${NIGHT_PART[l]}`).join("; ")+". Controlla su Citymapper."};
+    else res={r,cls:"warn",short:"Fino a mezzanotte circa",status:`${no.map(l=>LN[l].short||LN[l].name).join(", ")} non viaggia di notte: le ultime corse sono intorno a mezzanotte, mezzanotte e mezza. Se fate tardi serve un bus notturno o un taxi: guarda le opzioni su Citymapper.`};
+  }
+  NIGHTS.set(ck,res);return res;
+}
+function nightHTML(p){const n=nightInfo(p);
+  return `<div class="leg night"><h4>Rientro dopo il concerto</h4>
+    <div class="big">≈ ${n.r.min} min* <small>· dall'O2 all'alloggio</small></div>
+    <ul class="steps">${n.r.steps.map(x=>`<li><span class="ln ${x[0]}">${esc(x[1])}</span><span>${esc(x[2].replace("fino a l'alloggio","fino all'alloggio"))}</span></li>`).join("")}</ul>
+    <p class="nstat ${n.cls}">${esc(n.status)}</p>
+    <div class="links"><a href="${citymapper(O2,p,p.name)}" target="_blank" rel="noopener">Rientro su Citymapper (anche bus notturni)</a></div></div>`;}
 const citymapper=(p,dest,name)=>`https://citymapper.com/directions?startcoord=${p.lat},${p.lng}&endcoord=${dest.lat},${dest.lng}&endname=${encodeURIComponent(name)}`;
 
 /* countdown */
@@ -428,6 +476,7 @@ function renderCards(){
         <span class="per" id="pp${p.key}"></span></div>
       <div class="legs">${legHTML("Verso l'O2",p,O2,"The O2, Peninsula Square, London SE10 0DX",p.o2)}
         ${legHTML("Verso il centro",p,CENTRO,"Trafalgar Square, London",p.cen)}</div>
+      ${nightHTML(p)}
       ${p.note?`<p class="note">${esc(p.note)}</p>`:""}
       <div class="links"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Apri annuncio ${esc(p.src)}</a>
         ${`<button type="button" class="btn danger" data-del="${esc(p.key)}">Rimuovi</button><span data-confirm="${esc(p.key)}" hidden>Rimuovere? <button type="button" class="btn danger" data-yes="${esc(p.key)}">Sì</button> <button type="button" class="btn" data-no="${esc(p.key)}">No</button></span>`}</div>`;
@@ -465,7 +514,7 @@ function renderTable(){
   const list=items(),c=counts(),vals=list.map(p=>state.prices[p.key]).filter(v=>v>0),mins=list.map(p=>state.prices[p.key]>0?state.prices[p.key]*2/divOf(p):Infinity),minHead=Math.min(...mins);
   const t=(p,dest,data)=>data?data.t:`≈ ${route(p,dest,dest===O2?"The O2":"Trafalgar Square").min} min*`;
   document.getElementById("tbody").innerHTML=list.map((p,i)=>{const v=state.prices[p.key],head=v>0?v*2/divOf(p):null;
-    return `<tr><td>${i+1}</td><td><a href="#s${esc(p.key)}">${esc(p.name)}</a></td><td>${t(p,O2,p.o2)}</td><td>${t(p,CENTRO,p.cen)}</td>
+    return `<tr><td>${i+1}</td><td><a href="#s${esc(p.key)}">${esc(p.name)}</a></td><td>${t(p,O2,p.o2)}</td><td>${t(p,CENTRO,p.cen)}</td><td class="nshort ${nightInfo(p).cls}">${nightInfo(p).short}</td>
       <td>${v>0?eur(v):"–"}</td><td class="${head!=null&&head===minHead?"best":""}">${head!=null?eur(head)+(divOf(p)!==3?` (÷${divOf(p)})`:""):"–"}</td><td class="vcol">${c[p.key]||0}</td></tr>`}).join("");
 }
 
@@ -501,7 +550,7 @@ const mk=(tag,attrs,parent=svg)=>{const e=document.createElementNS(NS,tag);for(c
 const path=pts=>pts.map((p,i)=>(i?"L":"M")+xy(p[0],p[1]).map(n=>n.toFixed(1)).join(" ")).join(" ");
 const RIVER=[[51.4780,-0.1700],[51.4850,-0.1400],[51.4870,-0.1270],[51.4995,-0.1225],[51.5070,-0.1220],[51.5095,-0.1100],[51.5098,-0.0950],[51.5075,-0.0780],[51.5050,-0.0700],[51.5030,-0.0560],[51.5070,-0.0380],[51.5040,-0.0300],[51.4950,-0.0290],[51.4870,-0.0200],[51.4845,-0.0080],[51.4900,-0.0020],[51.4990,-0.0010],[51.5075,0.0000],[51.5085,0.0080],[51.5030,0.0140],[51.4950,0.0160],[51.4930,0.0300],[51.4990,0.0450],[51.5050,0.0700],[51.5000,0.1000]];
 const S=STATIONS;
-function renderMap(){
+function svgRenderMap(){
   project();svg.innerHTML="";
   mk("rect",{x:0,y:0,width:W,height:H,fill:"var(--land)",rx:8});
   mk("path",{d:path(RIVER),fill:"none",stroke:"var(--river)","stroke-width":14,"stroke-linecap":"round","stroke-linejoin":"round"});
@@ -536,7 +585,8 @@ function renderMap(){
 let HIDDEN=new Set(),AUTO=true;try{const h=JSON.parse(localStorage.getItem("o2lines")||"null");if(h){AUTO=!!h.auto;HIDDEN=new Set(h.hidden||[]);}}catch(e){}
 function usefulLines(){const u=new Set();
   items().forEach(p=>{[[O2,"The O2",p.o2],[CENTRO,"Trafalgar Square",p.cen]].forEach(([d,lab,data])=>{
-    const steps=(data?data.steps:[]).concat(route(p,d,lab).steps);steps.forEach(s=>{if(LN[s[0]])u.add(s[0]);});});});
+    const steps=(data?data.steps:[]).concat(route(p,d,lab).steps);steps.forEach(s=>{if(LN[s[0]])u.add(s[0]);});});
+    nightInfo(p).r.steps.forEach(s=>{if(LN[s[0]])u.add(s[0]);});});
   return u;}
 function saveHidden(){try{localStorage.setItem("o2lines",JSON.stringify({auto:AUTO,hidden:[...HIDDEN]}));}catch(e){}}
 function renderLegend(){const u=usefulLines();
@@ -636,6 +686,62 @@ document.getElementById("restore").addEventListener("click",async e=>{if(!e.targ
   const keys=[...state.removed];state.removed.clear();renderAll();
   if(db){for(const k of keys){try{await db.doc("removed/"+k).delete();}catch(err){}}}else store.set("o2removed","[]");});
 function renderAll(){renderRestore();renderCards();renderMap();renderVotes();}
+
+/* mappa stradale (Leaflet) per il sito pubblico */
+let LMAP=null,LLAYER=null,LFIT=false;
+const cv=c=>{const m=String(c).match(/var\((--[\w-]+)\)/);return m?(getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim()||"#888"):c;};
+let LFAIL=false;
+function useSvg(){LFAIL=true;document.getElementById("lmap").hidden=true;svg.removeAttribute("hidden");return svgRenderMap();}
+function renderMap(){
+  if(!window.L||LFAIL)return useSvg();
+  try{leafletRender();}catch(e){console.error(e);useSvg();}
+}
+function leafletRender(){
+  if(!LMAP){
+    const dark=matchMedia("(prefers-color-scheme: dark)").matches;
+    LMAP=L.map("lmap",{scrollWheelZoom:false,zoomSnap:0.5}).setView([51.505,-0.06],12);
+    L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark?"dark_all":"light_all"}/{z}/{x}/{y}{r}.png`,{maxZoom:19,subdomains:"abcd",
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'}).addTo(LMAP);
+    LLAYER=L.layerGroup().addTo(LMAP);
+    LMAP.on("click",e=>{if(!placing)return;placeAt({lat:e.latlng.lat,lng:e.latlng.lng},"Posizione presa dalla mappa: controlla che il punto + sia giusto.");});
+  }
+  LLAYER.clearLayers();
+  if(AUTO){const u=usefulLines();HIDDEN=new Set(LINES.filter(l=>!u.has(l.id)).map(l=>l.id));}
+  const surf=cv("var(--surface)");
+  LINES.filter(l=>!HIDDEN.has(l.id)).forEach(l=>{const col=cv(l.color);l.geo.forEach(g=>{const ll=g.map(c=>[c[1],c[0]]);
+    if(l.double){L.polyline(ll,{color:col,weight:6,opacity:.9,interactive:false}).addTo(LLAYER);L.polyline(ll,{color:surf,weight:2,interactive:false}).addTo(LLAYER);}
+    else L.polyline(ll,{color:col,weight:(l.w||3.5)+0.5,opacity:.9,dashArray:l.dash||null,interactive:false}).addTo(LLAYER);});});
+  TERMS.filter(t=>!HIDDEN.has(t.l)).forEach(t=>L.circleMarker([t.lat,t.lng],{radius:5,color:cv(LN[t.l].color),weight:2.5,fillColor:surf,fillOpacity:1})
+    .bindTooltip("Capolinea "+t.name+" · "+LN[t.l].name).addTo(LLAYER));
+  items().filter(p=>!p.base).forEach(p=>{const s=nearest(p);
+    L.polyline([[p.lat,p.lng],[s.lat,s.lng]],{color:cv("var(--fg)"),weight:2,dashArray:"2 6",interactive:false}).addTo(LLAYER);
+    L.circleMarker([s.lat,s.lng],{radius:5,color:cv("var(--fg)"),weight:2,fillColor:surf,fillOpacity:1}).bindTooltip(s.name+" ("+lineNames(s)+")").addTo(LLAYER);});
+  const sq=(p,txt)=>L.marker([p.lat,p.lng],{icon:L.divIcon({className:"",html:`<div class="lsq">${txt}</div>`,iconSize:null}),keyboard:false}).addTo(LLAYER);
+  sq(O2,"The O2");sq(CENTRO,"Centro");
+  items().forEach((p,i)=>{
+    if(p.approx)L.circle([p.lat,p.lng],{radius:300,color:cv("var(--accent)"),weight:1,fillOpacity:.1,interactive:false}).addTo(LLAYER);
+    const m=L.marker([p.lat,p.lng],{icon:L.divIcon({className:"",html:`<div class="lpin ${p.base?"":"added"}">${i+1}</div>`,iconSize:[30,30],iconAnchor:[15,15]}),title:p.name,riseOnHover:true}).addTo(LLAYER);
+    m.on("click",()=>{if(placing)return;activate(p.key);});});
+  if(tempPin)L.marker([tempPin.lat,tempPin.lng],{icon:L.divIcon({className:"",html:'<div class="lpin temp">+</div>',iconSize:[30,30],iconAnchor:[15,15]})}).addTo(LLAYER);
+  if(!LFIT){LFIT=true;const pts=items().map(p=>[p.lat,p.lng]).concat([[O2.lat,O2.lng],[CENTRO.lat,CENTRO.lng]]);LMAP.fitBounds(pts,{padding:[30,30]});}
+  renderLegend();
+}
+function placeAt(ll,msg){document.getElementById("f-loc").value=`${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;tempPin=ll;setPlacing(false);renderMap();
+  if(LMAP)LMAP.panTo([ll.lat,ll.lng]);
+  document.getElementById("f-loc").scrollIntoView({block:"center"});setMsg(msg,"ok");}
+
+/* ricerca indirizzo o codice postale */
+document.getElementById("f-find").addEventListener("click",async()=>{const q=document.getElementById("f-addr").value.trim();
+  if(!q){setMsg("Scrivi un indirizzo o un codice postale, per esempio E14 0BG.","err");return;}
+  const b=document.getElementById("f-find");b.disabled=true;setMsg("Cerco l'indirizzo…","");
+  try{const r=await fetch("/api/geocode?q="+encodeURIComponent(q));const d=await r.json();
+    if(!r.ok||!isFinite(d.lat)){setMsg("Indirizzo non trovato a Londra: prova con il codice postale o tocca la mappa.","err");return;}
+    tempPin={lat:d.lat,lng:d.lng};document.getElementById("f-loc").value=`${d.lat.toFixed(5)}, ${d.lng.toFixed(5)}`;renderMap();
+    if(LMAP)LMAP.setView([d.lat,d.lng],14);
+    setMsg("Trovato: "+d.label+". Controlla il punto + sulla mappa.","ok");}
+  catch(e){setMsg("Ricerca non disponibile in questo momento: tocca la mappa o incolla le coordinate.","err");}
+  finally{b.disabled=false;}});
+document.getElementById("f-addr").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("f-find").click();}});
 
 loadLocal();renderAll();
 if(/^#s[\w-]+$/.test(location.hash))setTimeout(()=>activate(location.hash.slice(2)),80);
