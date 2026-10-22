@@ -1,0 +1,578 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>Expedition L’Hondon Feb 27</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: mini sito a una pagina con barra di navigazione fissa stile segnaletica Tube; sezioni Mappa, Alloggi, Aggiungi, Confronto, Voto, Info */
+:root{
+  --bg:#f3f4f6; --surface:#ffffff; --fg:#14181f; --muted:#5d6573; --line:#d9dde3;
+  --river:#bcd3ea; --land:#e8ebef; --accent:#1d4ed8; --hero:#14181f; --hero-fg:#f3f4f6;
+  --jubilee:#7b3fb5; --dlr:#00a4a7; --rail:#c8102e; --bus:#d93a2b; --tube:#0019a8; --win:#0f8a4b; --warn:#b45309;
+  --cen:#dc241f; --nor:#14181f; --dis:#00782a; --cir:#f2c300; --pic:#003688; --vic:#0098d4; --bak:#b36305; --eli:#6950a1; --ovg:#e86a10;
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1318; --surface:#171c23; --fg:#e8ebf0; --muted:#9aa3b0; --line:#2a313b;
+  --river:#1f3550; --land:#141920; --accent:#7aa2ff; --hero:#1b2130; --hero-fg:#e8ebf0; --tube:#5b7cff; --win:#3fcf85; --warn:#f0a35a; --nor:#cfd5dd; --pic:#4d74e0; --eli:#9a85d6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1318; --surface:#171c23; --fg:#e8ebf0; --muted:#9aa3b0; --line:#2a313b;
+  --river:#1f3550; --land:#141920; --accent:#7aa2ff; --hero:#1b2130; --hero-fg:#e8ebf0; --tube:#5b7cff; --win:#3fcf85; --warn:#f0a35a; --nor:#cfd5dd; --pic:#4d74e0; --eli:#9a85d6; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--hero)}
+.gut{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.inner{max-width:880px;margin:0 auto}
+.hero{background:var(--hero);color:var(--hero-fg);padding-block:36px 30px}
+.roundel{display:flex;align-items:center;margin-bottom:22px}
+.roundel i{width:44px;height:44px;border-radius:50%;border:9px solid var(--rail);display:block;flex:none}
+.roundel b{margin-left:-50px;background:var(--jubilee);color:#fff;font-family:var(--f-display);font-weight:800;font-size:12px;letter-spacing:.12em;padding:3px 10px;text-transform:uppercase}
+.hero h1{font-family:var(--f-display);font-weight:900;font-size:clamp(34px,9vw,64px);line-height:.95;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.hero p{margin:14px 0 0;max-width:56ch;opacity:.85}
+.kpis{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:22px;font-family:var(--f-mono);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.kpis div{display:flex;flex-direction:column;gap:2px}
+.kpis strong{font-family:var(--f-display);font-size:26px;letter-spacing:0;font-variant-numeric:tabular-nums}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+nav .inner{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:8px}
+nav a{flex:none;font-size:13px;font-weight:600;color:var(--fg);text-decoration:none;padding:6px 12px;border-radius:999px}
+nav a:hover,nav a:focus-visible{background:var(--bg);outline:none}
+section.block{padding-block:28px 8px;scroll-margin-top:56px}
+.block > .inner{display:flex;flex-direction:column;gap:14px}
+h2.sec{font-family:var(--f-display);font-weight:800;font-size:24px;margin:0;display:flex;align-items:center;gap:10px}
+h2.sec::before{content:"";width:22px;height:6px;border-radius:3px;background:var(--jubilee)}
+.lead{margin:0;color:var(--muted);max-width:62ch}
+.mapbox{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px;overflow:hidden;position:relative}
+.mapbox.placing{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.mapbox.placing svg{cursor:crosshair}
+.placebar{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--accent);color:var(--surface);border-radius:8px;padding:8px 12px;margin-bottom:8px;font-size:14px;font-weight:600}
+.placebar button{background:transparent;color:inherit;border:1px solid currentColor;border-radius:999px;padding:3px 10px;font:600 12px var(--f-body);cursor:pointer}
+svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 4px 2px;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:18px;height:4px;border-radius:2px;display:inline-block}
+.pin{cursor:pointer}.pin:focus{outline:none}
+.pin:focus circle.ring,.pin:hover circle.ring{stroke:var(--accent);stroke-width:3}
+.cards{display:flex;flex-direction:column;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px;scroll-margin-top:64px;transition:box-shadow .2s,border-color .2s}
+.card.active{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.head{display:flex;gap:12px;align-items:flex-start}
+.num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--fg);color:var(--surface);font-family:var(--f-display);font-weight:800;display:grid;place-items:center;font-size:16px}
+.num.added{background:var(--surface);color:var(--fg);border:3px solid var(--fg)}
+.head h3{font-family:var(--f-display);font-weight:700;font-size:19px;line-height:1.2;margin:0;text-wrap:balance;overflow-wrap:anywhere}
+.meta{color:var(--muted);font-size:13px;margin-top:2px}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:5px;border:1px solid var(--line);margin:0 6px 4px 0}
+.tag.new{border-color:var(--accent);color:var(--accent)}
+.price{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:var(--bg);border-radius:10px;padding:10px 12px}
+.price label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+input,select,textarea{font:500 15px var(--f-body);padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);width:100%;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.price input{width:110px;font-weight:600;font-size:18px;font-variant-numeric:tabular-nums;padding:6px 8px}
+.per{font-variant-numeric:tabular-nums}.per b{font-size:18px}
+.legs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.legs{grid-template-columns:1fr}}
+.leg{min-width:0;border-top:3px solid var(--fg);padding-top:8px;display:flex;flex-direction:column;gap:6px}
+.leg h4{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+.leg .big{font-family:var(--f-display);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+.leg .big small{font-family:var(--f-body);font-weight:500;font-size:13px;color:var(--muted)}
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-size:14px}
+.steps li{display:flex;gap:8px;align-items:flex-start}
+.ln{flex:none;font-family:var(--f-mono);font-size:10.5px;font-weight:500;color:#fff;padding:2px 6px;border-radius:4px;margin-top:2px;min-width:54px;text-align:center}
+.ln.walk{color:var(--muted);border:1px solid var(--line)}
+.ln.jub{background:var(--jubilee)}.ln.dlr{background:var(--dlr)}.ln.rail{background:var(--rail)}.ln.bus{background:var(--bus)}.ln.tube{background:var(--tube)}.ln.cen{background:var(--cen)}.ln.nor{background:var(--nor);color:var(--surface)}.ln.dis{background:var(--dis)}.ln.cir{background:var(--cir);color:#14181f}.ln.pic{background:var(--pic)}.ln.vic{background:var(--vic)}.ln.bak{background:var(--bak)}.ln.eli{background:var(--eli)}.ln.ovg{background:var(--ovg)}
+.links{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.links a,.btn{font:600 13px var(--f-body);color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:var(--surface);cursor:pointer}
+.links a:hover,.links a:focus-visible,.btn:hover,.btn:focus-visible{border-color:var(--accent);outline:none}
+.btn.on,.btn.primary{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.btn.danger{color:var(--rail)}
+.btn:disabled{opacity:.5;cursor:default}
+.note{font-size:13px;color:var(--muted);margin:0}
+.est{color:var(--warn);font-size:12px}
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+tr:last-child td{border-bottom:0}
+td a{color:var(--fg);font-weight:600;text-decoration:none}
+td a:hover{text-decoration:underline}
+.best{color:var(--win);font-weight:700}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:620px){.form{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+.field small{font-size:12px;color:var(--muted)}
+.locrow{display:flex;gap:8px}
+.locrow input{flex:1}
+.locrow .btn{flex:none}
+.msg{font-size:13px;margin:0;min-height:1.2em}
+.msg.err{color:var(--rail)}.msg.ok{color:var(--win)}
+.vrow{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+.bar{height:10px;border-radius:5px;background:var(--bg);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--jubilee);border-radius:5px;width:0;transition:width .3s}
+.vname{font-weight:600;font-size:14px;min-width:0;overflow-wrap:anywhere}
+.vwho{font-size:12px;color:var(--muted)}
+.status{font-size:13px;color:var(--muted);margin:0}
+.info{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:620px){.info{grid-template-columns:1fr}}
+.tip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.tip h3{margin:0 0 4px;font-family:var(--f-display);font-size:16px}
+.tip p{margin:0;font-size:14px;color:var(--muted)}
+footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){.card,.bar i{transition:none}}
+</style>
+
+<header class="hero gut"><div class="inner">
+  <div class="roundel"><i></i><b>Underground</b></div>
+  <h1>Expedition L’Hondon Feb 27</h1>
+  <p>Mappa degli alloggi, confronto prezzi</p>
+  <div class="kpis">
+    <div>Partenza<strong id="cd">–</strong></div>
+    <div>Notti<strong>2</strong></div>
+    <div>Opzioni<strong id="kcount">5</strong></div>
+  </div>
+</div></header>
+
+<nav class="gut" aria-label="Sezioni"><div class="inner">
+  <a href="#mappa">Mappa</a><a href="#alloggi">Alloggi</a><a href="#aggiungi">Aggiungi</a><a href="#confronto">Confronto</a><a href="#voto" id="navvoto">Vota</a><a href="#info">Info utili</a>
+</div></nav>
+
+<main>
+<section class="block gut" id="mappa"><div class="inner">
+  <h2 class="sec">Mappa</h2>
+  <p class="lead">Tocca un numero per aprire la scheda dell'alloggio.</p>
+  <div class="mapbox" id="mapbox">
+    <div class="placebar" id="placebar" hidden><span>Tocca il punto dove si trova l'alloggio</span><button type="button" id="placecancel">Annulla</button></div>
+    <svg id="map" viewBox="0 0 800 420" role="img" aria-label="Mappa schematica di Londra con gli alloggi, l'O2 e il centro"></svg>
+    <div class="legend" id="legend"></div>
+  </div>
+</div></section>
+
+<section class="block gut" id="alloggi"><div class="inner">
+  <h2 class="sec">Alloggi</h2>
+  <p class="lead">Prima i cinque di partenza, poi quelli aggiunti, ordinati per vicinanza all'O2.</p>
+  <div class="cards" id="cards"></div>
+</div></section>
+
+<section class="block gut" id="aggiungi"><div class="inner">
+  <h2 class="sec">Aggiungi un alloggio</h2>
+  <p class="lead">Incolla il link dell'annuncio: nome e numero di persone vengono letti dal link quando possibile. La posizione la indichi tu, toccando la mappa o incollando le coordinate.</p>
+  <form class="panel" id="addform" novalidate>
+    <div class="form">
+      <div class="field full"><label for="f-url">Link dell'annuncio</label>
+        <input id="f-url" type="url" inputmode="url" placeholder="https://www.booking.com/hotel/... o https://www.airbnb.it/rooms/..." required></div>
+      <div class="field full"><label for="f-name">Nome</label>
+        <input id="f-name" type="text" maxlength="80" placeholder="Es. Hotel Greenwich" required></div>
+      <div class="field"><label for="f-total">Prezzo totale 2 notti (€)</label>
+        <input id="f-total" type="number" inputmode="decimal" min="0" step="1" placeholder="Es. 320"></div>
+      <div class="field"><label for="f-div">Persone per dividere</label>
+        <select id="f-div"><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option></select></div>
+      <div class="field full"><label for="f-loc">Posizione</label>
+        <div class="locrow"><input id="f-loc" type="text" placeholder="51.5030, -0.0180" autocomplete="off"><button type="button" class="btn" id="f-pick">Tocca sulla mappa</button></div>
+        <small>Da Google Maps: tieni premuto sul punto, copia le coordinate e incollale qui. Va bene anche un link di Google Maps con le coordinate.</small></div>
+      <div class="field full"><label for="f-note">Note</label>
+        <input id="f-note" type="text" maxlength="160" placeholder="Es. colazione inclusa, cancellazione gratuita"></div>
+    </div>
+    <div class="links"><button type="submit" class="btn primary" id="f-submit">Aggiungi alla lista</button></div>
+    <p class="msg" id="f-msg" role="status"></p>
+  </form>
+</div></section>
+
+<section class="block gut" id="confronto"><div class="inner">
+  <h2 class="sec">Confronto</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>Alloggio</th><th>Verso O2</th><th>Verso centro</th><th>A notte</th><th>A testa (2 notti)</th><th class="vcol">Voti</th></tr></thead>
+    <tbody id="tbody"></tbody>
+  </table></div>
+  <p class="note">I tempi con l'asterisco sono stime calcolate dalla stazione più vicina: controlla l'itinerario su Maps.</p>
+</div></section>
+
+<section class="block gut" id="voto"><div class="inner">
+  <h2 class="sec">Vota</h2>
+  <p class="lead">Un voto a testa, puoi cambiarlo quando vuoi.</p>
+  <div class="panel">
+    <div id="vbtns" class="links"></div>
+    <div id="vres" style="display:flex;flex-direction:column;gap:10px"></div>
+    <p class="status" id="vstatus">Scrivi il tuo nome per votare.</p>
+  </div>
+</div></section>
+
+<section class="block gut" id="info"><div class="inner">
+  <h2 class="sec">Info utili</h2>
+  <div class="info">
+    <div class="tip"><h3>Paga contactless</h3><p>Carta o telefono ai tornelli, stessa carta per tutti i viaggi: il tetto giornaliero scatta da solo. Una carta per persona.</p></div>
+    <div class="tip"><h3>Night Tube il sabato</h3><p>Il 27 febbraio 2027 è sabato: la Jubilee di norma viaggia tutta la notte il venerdì e il sabato. Controlla su TfL qualche giorno prima.</p></div>
+    <div class="tip"><h3>Uscita dall'O2</h3><p>A fine concerto North Greenwich è affollata. In alternativa: Uber Boat dal molo dietro l'arena o bus 108 verso Blackheath.</p></div>
+    <div class="tip"><h3>App da scaricare</h3><p>Citymapper per gli itinerari in tempo reale, TfL Go per scioperi e chiusure, l'app dell'O2 per i biglietti.</p></div>
+  </div>
+</div></section>
+</main>
+
+<footer class="gut"><div class="inner">Centro = Trafalgar Square / Charing Cross. I due Airbnb iniziali sono posizionati in modo approssimativo: l'indirizzo esatto arriva dopo la prenotazione. Tempi porta a porta indicativi.</div></footer>
+
+<script>
+const O2={lat:51.503038,lng:0.0031543};
+const CENTRO={lat:51.5080,lng:-0.1281};
+const BASE=[
+ {key:"1",name:"Britannia International Hotel",area:"Canary Wharf · 163 Marsh Wall, E14",src:"Booking",tags:["Hotel","3 letti singoli","non rimborsabile"],lat:51.5019422,lng:-0.0233396,div:3,price:124,
+  url:"https://www.booking.com/hotel/gb/britannia-londoninternational.it.html?checkin=2027-02-27&checkout=2027-03-01&group_adults=3",
+  o2:{t:"≈ 20 min",steps:[["walk","A piedi","12 min fino a Canary Wharf (oppure 4 min a South Quay DLR)"],["jub","Jubilee","Canary Wharf → North Greenwich, 1 fermata, direzione Stratford"]],alt:"Alternativa: Uber Boat da Canary Wharf Pier a North Greenwich Pier."},
+  cen:{t:"≈ 35 min",steps:[["walk","A piedi","12 min fino a Canary Wharf"],["jub","Jubilee","Canary Wharf → Westminster, 6 fermate, direzione Stanmore"],["walk","A piedi","10 min fino a Trafalgar Square"]]}},
+ {key:"2",name:"Airbnb · 13 piani, Canary Wharf",area:"South Quay, E14 · stanza privata",src:"Airbnb",tags:["Stanza","5,0 ★ (11)"],lat:51.5004,lng:-0.0178,approx:true,div:3,price:180.5,
+  url:"https://www.airbnb.it/rooms/1674247838340056766?check_in=2027-02-27&check_out=2027-03-01&adults=3",
+  o2:{t:"≈ 15-20 min",steps:[["walk","A piedi","10 min fino a Canary Wharf (South Quay DLR a 4 min)"],["jub","Jubilee","Canary Wharf → North Greenwich, 1 fermata"]]},
+  cen:{t:"≈ 35 min",steps:[["walk","A piedi","10 min fino a Canary Wharf"],["jub","Jubilee","Canary Wharf → Westminster, 6 fermate"],["walk","A piedi","10 min fino a Trafalgar Square"]]},
+  note:"1 matrimoniale + letto basso in salotto: per 3 persone è stretto."},
+ {key:"3",name:"Airbnb · Appartamento a Poplar",area:"Poplar, E14 0BG · intero alloggio",src:"Airbnb",tags:["Appartamento","4,82 ★ (22)","fino a 4","cancellazione gratuita fino al 22 feb"],lat:51.5083,lng:-0.0105,approx:true,div:3,price:221.15,
+  url:"https://www.airbnb.it/rooms/1680399064233478816?check_in=2027-02-27&check_out=2027-03-01&adults=3",
+  o2:{t:"≈ 20 min",steps:[["walk","A piedi","5 min fino a Blackwall DLR"],["dlr","DLR","Blackwall → Canning Town, 2 fermate"],["jub","Jubilee","Canning Town → North Greenwich, 1 fermata"]]},
+  cen:{t:"≈ 35 min",steps:[["walk","A piedi","5 min fino a Poplar DLR"],["dlr","DLR","Poplar → Bank, circa 15 min"],["walk","Cambio","Monument: District o Circle fino a Embankment, 5 fermate"],["walk","A piedi","5 min fino a Trafalgar Square"]]},
+  note:"King + divano letto king. Chiavi da KeyNest, ritiro 9:00-21:00."},
+ {key:"4",name:"The Clarendon Hotel",area:"Blackheath · 8-16 Montpelier Row, SE3",src:"Booking",tags:["Hotel","3 adulti","colazione inclusa","cancellazione gratuita"],lat:51.4684925,lng:0.0097267,div:3,price:179,
+  url:"https://www.booking.com/hotel/gb/theclarendonhotel.it.html?checkin=2027-02-27&checkout=2027-03-01&group_adults=3",
+  o2:{t:"≈ 25 min",steps:[["bus","Bus 108","Fermata di fronte all'hotel, direzione Stratford, diretto a North Greenwich"]],alt:"Il 108 ha servizio notturno: comodo per il rientro dopo il concerto."},
+  cen:{t:"≈ 30 min",steps:[["walk","A piedi","10 min fino alla stazione di Blackheath"],["rail","Treno","Blackheath → London Charing Cross, circa 20 min"],["walk","A piedi","Charing Cross è su Trafalgar Square"]]},
+  note:"Nessuna Tube vicina: si va in bus o treno."},
+ {key:"5",name:"Marlin Apartments Empire Square",area:"London Bridge · 34 Long Lane, SE1",src:"Booking",tags:["Appartamento 74 m²","2 camere","diviso per 5"],lat:51.5009236,lng:-0.0910406,div:5,price:327.5,
+  url:"https://www.booking.com/hotel/gb/marlin-apartments-empire-square.it.html?checkin=2027-02-27&checkout=2027-03-01&group_adults=5",
+  o2:{t:"≈ 30 min",steps:[["walk","A piedi","9 min fino a London Bridge (Borough è a 2 min)"],["jub","Jubilee","London Bridge → North Greenwich, 4 fermate, direzione Stratford"]]},
+  cen:{t:"≈ 25 min",steps:[["walk","A piedi","9 min fino a London Bridge"],["jub","Jubilee","London Bridge → Waterloo, 2 fermate"],["walk","A piedi","10 min sul Golden Jubilee Bridge fino a Charing Cross"]]},
+  note:"Intero appartamento da 74 m² con 2 camere e 3 letti: il prezzo a testa è calcolato su 5 persone."}
+];
+BASE.forEach(b=>b.base=true);
+
+/* stazioni e linee (coordinate approssimate) */
+const STATIONS={
+"Paddington":[51.5154,-0.1755],"Marble Arch":[51.5136,-0.1586],"Bond Street":[51.5142,-0.1494],"Oxford Circus":[51.5152,-0.1415],"Tottenham Court Road":[51.5165,-0.1310],"Holborn":[51.5174,-0.1201],"Chancery Lane":[51.5185,-0.1111],"St Paul's":[51.5146,-0.0973],"Bank":[51.5133,-0.0886],"Liverpool Street":[51.5178,-0.0823],"Bethnal Green":[51.5270,-0.0549],"Mile End":[51.5249,-0.0332],"Stratford":[51.5416,-0.0034],
+"King's Cross St Pancras":[51.5308,-0.1238],"Angel":[51.5322,-0.1058],"Old Street":[51.5263,-0.0873],"Moorgate":[51.5186,-0.0886],"London Bridge":[51.5052,-0.0864],"Borough":[51.5011,-0.0943],"Elephant & Castle":[51.4943,-0.1001],"Kennington":[51.4884,-0.1053],"Nine Elms":[51.4800,-0.1290],"Battersea Power Station":[51.4790,-0.1420],
+"Euston":[51.5282,-0.1337],"Warren Street":[51.5247,-0.1384],"Goodge Street":[51.5205,-0.1347],"Leicester Square":[51.5113,-0.1281],"Charing Cross":[51.5080,-0.1247],"Embankment":[51.5074,-0.1223],"Waterloo":[51.5031,-0.1132],
+"Victoria":[51.4965,-0.1447],"St James's Park":[51.4994,-0.1335],"Westminster":[51.5010,-0.1254],"Temple":[51.5111,-0.1141],"Blackfriars":[51.5120,-0.1039],"Mansion House":[51.5122,-0.0940],"Cannon Street":[51.5113,-0.0904],"Monument":[51.5108,-0.0863],"Tower Hill":[51.5098,-0.0766],"Aldgate East":[51.5152,-0.0722],"Whitechapel":[51.5195,-0.0612],"Stepney Green":[51.5221,-0.0465],"Bow Road":[51.5269,-0.0247],"Bromley-by-Bow":[51.5248,-0.0119],"West Ham":[51.5280,0.0050],
+"Baker Street":[51.5226,-0.1571],"Great Portland Street":[51.5238,-0.1439],"Euston Square":[51.5260,-0.1359],"Farringdon":[51.5203,-0.1053],"Barbican":[51.5204,-0.0979],"Aldgate":[51.5143,-0.0755],
+"Hyde Park Corner":[51.5027,-0.1527],"Green Park":[51.5067,-0.1428],"Piccadilly Circus":[51.5098,-0.1342],"Covent Garden":[51.5129,-0.1243],"Russell Square":[51.5230,-0.1244],
+"Vauxhall":[51.4861,-0.1253],"Pimlico":[51.4893,-0.1334],"Highbury & Islington":[51.5460,-0.1040],
+"Lambeth North":[51.4991,-0.1115],"Regent's Park":[51.5234,-0.1466],
+"Southwark":[51.5041,-0.1052],"Bermondsey":[51.4979,-0.0637],"Canada Water":[51.4982,-0.0502],"Canary Wharf":[51.5035,-0.0187],"North Greenwich":[51.5005,0.0040],"Canning Town":[51.5147,0.0082],
+"Custom House":[51.5097,0.0277],"Woolwich":[51.4917,0.0717],
+"Dalston Junction":[51.5461,-0.0752],"Haggerston":[51.5387,-0.0757],"Hoxton":[51.5315,-0.0756],"Shoreditch High Street":[51.5233,-0.0752],"Shadwell":[51.5117,-0.0570],"Wapping":[51.5043,-0.0559],"Rotherhithe":[51.5010,-0.0520],"Surrey Quays":[51.4933,-0.0475],"New Cross Gate":[51.4755,-0.0402],
+"Limehouse":[51.5123,-0.0397],"Westferry":[51.5097,-0.0265],"Poplar":[51.5077,-0.0173],"Blackwall":[51.5079,-0.0067],"East India":[51.5093,-0.0021],"Royal Victoria":[51.5091,0.0181],"West India Quay":[51.5070,-0.0203],"Heron Quays":[51.5033,-0.0215],"South Quay":[51.5007,-0.0172],"Crossharbour":[51.4957,-0.0144],"Mudchute":[51.4907,-0.0146],"Island Gardens":[51.4875,-0.0101],"Cutty Sark":[51.4826,-0.0096],"Greenwich":[51.4781,-0.0149],"Deptford Bridge":[51.4740,-0.0216],"Lewisham":[51.4657,-0.0142],"All Saints":[51.5107,-0.0130],"Devons Road":[51.5222,-0.0174],"Bow Church":[51.5276,-0.0208],"Pudding Mill Lane":[51.5343,-0.0139],
+"Blackheath":[51.4659,0.0090],"Deptford":[51.4789,-0.0262],"Maze Hill":[51.4826,0.0030],"Westcombe Park":[51.4842,0.0181],"Charlton":[51.4866,0.0313]
+};
+const LINES=[
+ {id:"rail",name:"Treno",color:"var(--rail)",dash:true,paths:[["Charing Cross","Waterloo","London Bridge","New Cross Gate","Lewisham","Blackheath"],["London Bridge","Deptford","Greenwich","Maze Hill","Westcombe Park","Charlton"]]},
+ {id:"ovg",name:"Overground",color:"var(--ovg)",paths:[["Highbury & Islington","Dalston Junction","Haggerston","Hoxton","Shoreditch High Street","Whitechapel","Shadwell","Wapping","Rotherhithe","Canada Water","Surrey Quays","New Cross Gate"]]},
+ {id:"eli",name:"Elizabeth",color:"var(--eli)",double:true,paths:[["Paddington","Bond Street","Tottenham Court Road","Farringdon","Liverpool Street","Whitechapel","Canary Wharf","Custom House","Woolwich"],["Liverpool Street","Stratford"]]},
+ {id:"cir",name:"Circle e H&C",color:"var(--cir)",paths:[["Baker Street","Great Portland Street","Euston Square","King's Cross St Pancras","Farringdon","Barbican","Moorgate","Liverpool Street","Aldgate","Tower Hill"]]},
+ {id:"dis",name:"District",color:"var(--dis)",paths:[["Victoria","St James's Park","Westminster","Embankment","Temple","Blackfriars","Mansion House","Cannon Street","Monument","Tower Hill","Aldgate East","Whitechapel","Stepney Green","Mile End","Bow Road","Bromley-by-Bow","West Ham"]]},
+ {id:"bak",name:"Bakerloo",color:"var(--bak)",paths:[["Elephant & Castle","Lambeth North","Waterloo","Embankment","Charing Cross","Piccadilly Circus","Oxford Circus","Regent's Park","Baker Street"]]},
+ {id:"vic",name:"Victoria",color:"var(--vic)",paths:[["Vauxhall","Pimlico","Victoria","Green Park","Oxford Circus","Warren Street","Euston","King's Cross St Pancras","Highbury & Islington"]]},
+ {id:"pic",name:"Piccadilly",color:"var(--pic)",paths:[["Hyde Park Corner","Green Park","Piccadilly Circus","Leicester Square","Covent Garden","Holborn","Russell Square","King's Cross St Pancras"]]},
+ {id:"nor",name:"Northern",color:"var(--nor)",paths:[["King's Cross St Pancras","Angel","Old Street","Moorgate","Bank","London Bridge","Borough","Elephant & Castle","Kennington"],["Euston","Warren Street","Goodge Street","Tottenham Court Road","Leicester Square","Charing Cross","Embankment","Waterloo","Kennington","Nine Elms","Battersea Power Station"]]},
+ {id:"cen",name:"Central",color:"var(--cen)",paths:[["Marble Arch","Bond Street","Oxford Circus","Tottenham Court Road","Holborn","Chancery Lane","St Paul's","Bank","Liverpool Street","Bethnal Green","Mile End","Stratford"]]},
+ {id:"dlr",name:"DLR",color:"var(--dlr)",paths:[["Bank","Shadwell","Limehouse","Westferry","Poplar","Blackwall","East India","Canning Town","Royal Victoria","Custom House"],["Poplar","West India Quay","Canary Wharf","Heron Quays","South Quay","Crossharbour","Mudchute","Island Gardens","Cutty Sark","Greenwich","Deptford Bridge","Lewisham"],["Poplar","All Saints","Devons Road","Bow Church","Pudding Mill Lane","Stratford"]]},
+ {id:"jub",name:"Jubilee",color:"var(--jubilee)",wide:true,paths:[["Baker Street","Bond Street","Green Park","Westminster","Waterloo","Southwark","London Bridge","Bermondsey","Canada Water","Canary Wharf","North Greenwich","Canning Town","West Ham","Stratford"]]}
+];
+const LN=Object.fromEntries(LINES.map(l=>[l.id,l]));
+const PRIO=["jub","eli","dlr","nor","cen","dis","cir","vic","pic","bak","ovg","rail"];
+const ST=Object.entries(STATIONS).map(([name,[lat,lng]])=>{
+  const lines=LINES.filter(l=>l.paths.some(p=>p.includes(name))).map(l=>l.id).sort((a,b)=>PRIO.indexOf(a)-PRIO.indexOf(b));
+  return{name,lat,lng,lines,type:lines[0]||"rail"};});
+const LINE=Object.fromEntries(LINES.map(l=>[l.id,l.name]));
+const lineNames=s=>s.lines.map(id=>LN[id].name).join(", ");
+
+
+const fmt=n=>n.toLocaleString("it-IT",{minimumFractionDigits:1,maximumFractionDigits:1});
+const eur=n=>n.toLocaleString("it-IT",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const gmaps=(p,dest)=>`https://www.google.com/maps/dir/?api=1&origin=${p.lat},${p.lng}&destination=${encodeURIComponent(dest)}&travelmode=transit`;
+function km(a,b){const R=6371,r=x=>x*Math.PI/180,dLa=r(b.lat-a.lat),dLo=r(b.lng-a.lng);
+  const h=Math.sin(dLa/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLo/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+const nearest=p=>ST.map(s=>({...s,d:km(p,s)})).sort((a,b)=>a.d-b.d)[0];
+const walkMin=d=>Math.max(1,Math.round(d*1.3/4.8*60));
+const r5=n=>Math.max(5,Math.round(n/5)*5);
+function estimate(p,dest){const s=nearest(p),w=walkMin(s.d),direct=km(p,dest);
+  if(walkMin(direct)<=w+12)return{min:r5(walkMin(direct)),s,w,walkOnly:true};
+  return{min:r5(w+km(s,dest)*1.25/22*60+8),s,w};}
+
+/* countdown */
+(()=>{const d=Math.ceil((new Date("2027-02-27T00:00:00+01:00")-new Date())/864e5);
+  document.getElementById("cd").textContent=d>0?`${d} giorni`:d===0?"Oggi":"Fatto";})();
+
+const state={prices:{},votes:{},me:null,names:{},added:[]};
+BASE.forEach(b=>state.prices[b.key]=b.price);
+let db=null,user=null;
+
+function items(){
+  const add=state.added.map(a=>({key:"u_"+a.id,docId:a.id,base:false,name:a.name,url:a.url,src:a.src||"Annuncio",lat:a.lat,lng:a.lng,div:a.div||3,note:a.note,
+    area:"Aggiunto dal gruppo",tags:[]})).sort((x,y)=>km(x,O2)-km(y,O2));
+  add.forEach(a=>{const v=state.added.find(z=>"u_"+z.id===a.key);if(!(a.key in state.prices)||state.prices[a.key]==null)state.prices[a.key]=v&&v.price>0?v.price:null;});
+  return BASE.concat(add);
+}
+const divOf=p=>p.div||3;
+
+/* cards */
+function legHTML(title,p,dest,destName,data){
+  const dist=km(p,dest);
+  if(data)return `<div class="leg"><h4>${title}</h4>
+    <div class="big">${data.t} <small>· ${fmt(dist)} km in linea d'aria</small></div>
+    <ul class="steps">${data.steps.map(s=>`<li><span class="ln ${s[0]}">${s[1]}</span><span>${s[2]}</span></li>`).join("")}</ul>
+    ${data.alt?`<p class="note">${data.alt}</p>`:""}
+    <div class="links"><a href="${gmaps(p,destName)}" target="_blank" rel="noopener">Itinerario su Maps</a></div></div>`;
+  const e=estimate(p,dest),s=e.s;
+  const steps=e.walkOnly?[["walk","A piedi",`circa ${e.min} min a piedi`]]:
+    [["walk","A piedi",`${e.w} min fino a ${esc(s.name)}`],[s.type,LINE[s.type],`da ${esc(s.name)} (${esc(lineNames(s))}) verso ${dest===O2?"North Greenwich":"Charing Cross"}: controlla cambi su Maps`]];
+  return `<div class="leg"><h4>${title}</h4>
+    <div class="big">≈ ${e.min} min* <small>· ${fmt(dist)} km in linea d'aria</small></div>
+    <ul class="steps">${steps.map(x=>`<li><span class="ln ${x[0]}">${x[1]}</span><span>${x[2]}</span></li>`).join("")}</ul>
+    <p class="est">* stima automatica dalla stazione più vicina</p>
+    <div class="links"><a href="${gmaps(p,destName)}" target="_blank" rel="noopener">Itinerario su Maps</a></div></div>`;
+}
+function renderCards(){
+  const list=items(),cards=document.getElementById("cards");
+  document.getElementById("kcount").textContent=list.length;
+  cards.innerHTML="";
+  list.forEach((p,i)=>{
+    const near=nearest(p);
+    const tags=[p.src,...p.tags].map(t=>`<span class="tag">${esc(t)}</span>`).join("")+(p.base?"":`<span class="tag new">aggiunto</span><span class="tag">÷ ${divOf(p)}</span>`);
+    const el=document.createElement("article");el.className="card";el.id="s"+p.key;
+    el.innerHTML=`<div class="head"><div class="num ${p.base?"":"added"}">${i+1}</div><div style="min-width:0">
+        <h3>${esc(p.name)}</h3><div class="meta">${esc(p.area)}${p.approx?" · posizione approssimativa":""} · stazione più vicina: ${esc(near.name)} (${esc(lineNames(near))}), ${walkMin(near.d)} min a piedi</div>
+        <div style="margin-top:6px">${tags}</div></div></div>
+      <div class="price"><label for="pr${p.key}">Prezzo a notte</label>
+        <input id="pr${p.key}" type="number" inputmode="decimal" min="0" step="1" placeholder="€">
+        <span class="per" id="pp${p.key}"></span></div>
+      <div class="legs">${legHTML("Verso l'O2",p,O2,"The O2, Peninsula Square, London SE10 0DX",p.o2)}
+        ${legHTML("Verso il centro",p,CENTRO,"Trafalgar Square, London",p.cen)}</div>
+      ${p.note?`<p class="note">${esc(p.note)}</p>`:""}
+      <div class="links"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Apri annuncio ${esc(p.src)}</a>
+        ${p.base?"":`<button type="button" class="btn danger" data-del="${esc(p.key)}">Rimuovi</button><span data-confirm="${esc(p.key)}" hidden>Rimuovere? <button type="button" class="btn danger" data-yes="${esc(p.key)}">Sì</button> <button type="button" class="btn" data-no="${esc(p.key)}">No</button></span>`}</div>`;
+    cards.appendChild(el);
+    const inp=el.querySelector("input");
+    inp.addEventListener("input",()=>{const v=parseFloat(inp.value);state.prices[p.key]=v>0?v:null;updatePrices();});
+    inp.addEventListener("change",()=>savePrice(p,inp.value));
+  });
+  updatePrices(true);
+}
+document.getElementById("cards").addEventListener("click",e=>{
+  const d=e.target.closest("[data-del]"),y=e.target.closest("[data-yes]"),n=e.target.closest("[data-no]");
+  if(d){d.hidden=true;document.querySelector(`[data-confirm="${d.dataset.del}"]`).hidden=false;}
+  if(n){document.querySelector(`[data-confirm="${n.dataset.no}"]`).hidden=true;document.querySelector(`[data-del="${n.dataset.no}"]`).hidden=false;}
+  if(y)removeListing(y.dataset.yes);
+});
+
+function updatePrices(syncInputs){
+  items().forEach(p=>{const v=state.prices[p.key],dv=divOf(p),out=document.getElementById("pp"+p.key);if(!out)return;
+    out.innerHTML=v>0?`<b>${eur(v)}</b> / notte (${eur(v/dv)} a testa su ${dv}) · 2 notti ${eur(v*2)} (${eur(v*2/dv)} a testa)`:"inserisci il prezzo";
+    const inp=document.getElementById("pr"+p.key);if(inp&&(syncInputs||document.activeElement!==inp))inp.value=v>0?Math.round(v*100)/100:"";});
+  renderTable();
+}
+async function savePrice(p,raw){
+  const v=parseFloat(raw),val=v>0?Math.round(v*100)/100:null;
+  if(!db){store.set("o2price"+p.key,val?String(val):"");if(!p.base)saveLocal();return;}
+  try{
+    if(p.base)await db.doc("prices/p"+p.key).set({value:val});
+    else{const a=state.added.find(z=>z.id===p.docId);if(a){a.price=val;await db.doc("listings/"+a.id).set(clean(a));}}
+  }catch(e){document.getElementById("pp"+p.key).textContent="Non salvato per il gruppo: serve l'accesso alla pagina.";}
+}
+
+function counts(){const c={};Object.values(state.votes).forEach(v=>{c[v]=(c[v]||0)+1});return c;}
+function renderTable(){
+  const list=items(),c=counts(),vals=list.map(p=>state.prices[p.key]).filter(v=>v>0),mins=list.map(p=>state.prices[p.key]>0?state.prices[p.key]*2/divOf(p):Infinity),minHead=Math.min(...mins);
+  const t=(p,dest,data)=>data?data.t:`≈ ${estimate(p,dest).min} min*`;
+  document.getElementById("tbody").innerHTML=list.map((p,i)=>{const v=state.prices[p.key],head=v>0?v*2/divOf(p):null;
+    return `<tr><td>${i+1}</td><td><a href="#s${esc(p.key)}">${esc(p.name)}</a></td><td>${t(p,O2,p.o2)}</td><td>${t(p,CENTRO,p.cen)}</td>
+      <td>${v>0?eur(v):"–"}</td><td class="${head!=null&&head===minHead?"best":""}">${head!=null?eur(head)+(divOf(p)!==3?` (÷${divOf(p)})`:""):"–"}</td><td class="vcol">${c[p.key]||0}</td></tr>`}).join("");
+}
+
+function renderVotes(){
+  const list=items(),c=counts(),total=Object.keys(state.votes).length,mine=state.me?state.votes[state.me]:null;
+  document.getElementById("vbtns").innerHTML=list.map((p,i)=>`<button type="button" class="btn ${mine===p.key?"on":""}" data-v="${esc(p.key)}" ${db&&state.me?"":"disabled"}>${i+1} · ${esc(p.name.replace("Airbnb · ",""))}</button>`).join("");
+  document.getElementById("vres").innerHTML=list.map((p,i)=>{const n=c[p.key]||0,who=Object.entries(state.votes).filter(([,v])=>v===p.key).map(([u])=>u===state.me?"tu":esc(state.names[u]||"qualcuno")).join(", ");
+    return `<div class="vrow"><span class="num ${p.base?"":"added"}" style="width:26px;height:26px;font-size:13px">${i+1}</span>
+      <div style="min-width:0"><div class="vname">${esc(p.name)}</div><div class="bar"><i style="width:${total?n/total*100:0}%"></i></div>${who?`<div class="vwho">${who}</div>`:""}</div>
+      <strong style="font-variant-numeric:tabular-nums">${n}</strong></div>`}).join("");
+  renderTable();
+}
+document.getElementById("vbtns").addEventListener("click",async e=>{const b=e.target.closest("button[data-v]");if(!b||!db||!state.me)return;
+  const v=b.dataset.v,prev=state.votes[state.me];state.votes[state.me]=v;renderVotes();
+  try{await db.doc("votes/"+state.me).set({choice:v});document.getElementById("vstatus").textContent="Voto salvato.";}
+  catch(err){if(prev)state.votes[state.me]=prev;else delete state.votes[state.me];renderVotes();
+    document.getElementById("vstatus").textContent="Voto non salvato: chiedi a chi ha creato la pagina l'accesso.";}});
+
+/* map */
+const svg=document.getElementById("map"),NS="http://www.w3.org/2000/svg";
+const W=800,H=420,pad=28;let PROJ=null,tempPin=null;
+const DEF={w:-0.140,e:0.045,n:51.516,s:51.458};
+function project(){
+  const pts=items().concat([O2,CENTRO],tempPin?[tempPin]:[]);
+  const B={w:Math.min(DEF.w,...pts.map(p=>p.lng-0.006)),e:Math.max(DEF.e,...pts.map(p=>p.lng+0.006)),n:Math.max(DEF.n,...pts.map(p=>p.lat+0.004)),s:Math.min(DEF.s,...pts.map(p=>p.lat-0.004))};
+  const kx=Math.cos(51.49*Math.PI/180),sc=Math.min((W-2*pad)/((B.e-B.w)*kx),(H-2*pad)/(B.n-B.s));
+  const offX=(W-(B.e-B.w)*kx*sc)/2,offY=(H-(B.n-B.s)*sc)/2;
+  PROJ={B,kx,sc,offX,offY};
+}
+const xy=(lat,lng)=>[PROJ.offX+(lng-PROJ.B.w)*PROJ.kx*PROJ.sc,PROJ.offY+(PROJ.B.n-lat)*PROJ.sc];
+const unxy=(x,y)=>({lat:PROJ.B.n-(y-PROJ.offY)/PROJ.sc,lng:(x-PROJ.offX)/(PROJ.kx*PROJ.sc)+PROJ.B.w});
+const mk=(tag,attrs,parent=svg)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent.appendChild(e);return e;};
+const path=pts=>pts.map((p,i)=>(i?"L":"M")+xy(p[0],p[1]).map(n=>n.toFixed(1)).join(" ")).join(" ");
+const RIVER=[[51.4780,-0.1700],[51.4850,-0.1400],[51.4870,-0.1270],[51.4995,-0.1225],[51.5070,-0.1220],[51.5095,-0.1100],[51.5098,-0.0950],[51.5075,-0.0780],[51.5050,-0.0700],[51.5030,-0.0560],[51.5070,-0.0380],[51.5040,-0.0300],[51.4950,-0.0290],[51.4870,-0.0200],[51.4845,-0.0080],[51.4900,-0.0020],[51.4990,-0.0010],[51.5075,0.0000],[51.5085,0.0080],[51.5030,0.0140],[51.4950,0.0160],[51.4930,0.0300],[51.4990,0.0450],[51.5050,0.0700],[51.5000,0.1000]];
+const S=STATIONS;
+function renderMap(){
+  project();svg.innerHTML="";
+  mk("rect",{x:0,y:0,width:W,height:H,fill:"var(--land)",rx:8});
+  mk("path",{d:path(RIVER),fill:"none",stroke:"var(--river)","stroke-width":14,"stroke-linecap":"round","stroke-linejoin":"round"});
+  LINES.forEach(l=>l.paths.forEach(p=>{const d=path(p.map(n=>S[n]));
+    if(l.double){mk("path",{d,fill:"none",stroke:l.color,"stroke-width":6,"stroke-linejoin":"round","stroke-linecap":"round"});mk("path",{d,fill:"none",stroke:"var(--land)","stroke-width":2,"stroke-linejoin":"round","stroke-linecap":"round"});}
+    else{const a={d,fill:"none",stroke:l.color,"stroke-width":l.wide?5:l.dash?3:3.5,"stroke-linejoin":"round","stroke-linecap":"round"};if(l.dash)a["stroke-dasharray"]="7 5";mk("path",a);}}));
+  const label=(lat,lng,txt,dx,dy,anchor)=>{const [x,y]=xy(lat,lng);const t=mk("text",{x:x+dx,y:y+dy,"text-anchor":anchor,fill:"var(--muted)","font-size":11,"font-family":"var(--f-body)"});t.textContent=txt;};
+  const station=(n,dx,dy,anchor)=>{const p=S[n],[x,y]=xy(p[0],p[1]);mk("circle",{cx:x,cy:y,r:4,fill:"var(--surface)",stroke:"var(--fg)","stroke-width":2});label(p[0],p[1],n,dx,dy,anchor);};
+  station("Canary Wharf",-6,-10,"end");station("London Bridge",6,-9,"start");station("Blackwall",8,-8,"start");station("Blackheath",10,4,"start");station("Charing Cross",0,22,"middle");
+  const dest=(p,txt,dx,dy,anchor)=>{const [x,y]=xy(p.lat,p.lng);mk("rect",{x:x-9,y:y-9,width:18,height:18,rx:4,fill:"var(--accent)"});
+    const t=mk("text",{x:x+dx,y:y+dy,"text-anchor":anchor,fill:"var(--fg)","font-size":13,"font-weight":700,"font-family":"var(--f-display)"});t.textContent=txt;};
+  items().filter(p=>!p.base).forEach(p=>{const s=nearest(p),[x1,y1]=xy(p.lat,p.lng),[x2,y2]=xy(s.lat,s.lng);
+    mk("line",{x1,y1,x2,y2,stroke:"var(--fg)","stroke-width":1.5,"stroke-dasharray":"2 4","stroke-linecap":"round"});
+    mk("circle",{cx:x2,cy:y2,r:5,fill:"var(--surface)",stroke:"var(--fg)","stroke-width":2});
+    const t=mk("text",{x:x2+8,y:y2-8,fill:"var(--fg)","font-size":11,"font-weight":600,"font-family":"var(--f-body)"});t.textContent=s.name;});
+  dest(O2,"The O2",14,-10,"start");dest(CENTRO,"Centro",0,-14,"middle");
+  items().forEach((p,i)=>{const [x,y]=xy(p.lat,p.lng);const g=mk("g",{class:"pin",tabindex:0,role:"button","aria-label":`Apri scheda ${i+1}: ${p.name}`});
+    if(p.approx)mk("circle",{cx:x,cy:y,r:20,fill:"var(--accent)","fill-opacity":.12},g);
+    mk("circle",{class:"ring",cx:x,cy:y,r:13,fill:p.base?"var(--fg)":"var(--surface)",stroke:p.base?"var(--surface)":"var(--fg)","stroke-width":p.base?2:3},g);
+    const t=mk("text",{x:x,y:y+4.5,"text-anchor":"middle",fill:p.base?"var(--surface)":"var(--fg)","font-size":13,"font-weight":800,"font-family":"var(--f-display)"},g);t.textContent=i+1;
+    g.addEventListener("click",e=>{if(placing)return;e.stopPropagation();activate(p.key);});
+    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();activate(p.key);}});});
+  if(tempPin){const [x,y]=xy(tempPin.lat,tempPin.lng);mk("circle",{cx:x,cy:y,r:11,fill:"var(--accent)",stroke:"var(--surface)","stroke-width":2});
+    const t=mk("text",{x:x,y:y+4.5,"text-anchor":"middle",fill:"var(--surface)","font-size":13,"font-weight":800,"font-family":"var(--f-display)"});t.textContent="+";}
+}
+function renderLegend(){document.getElementById("legend").innerHTML=LINES.slice().reverse().map(l=>`<span><i class="sw" style="background:${l.color}${l.dash?";height:3px":""}"></i>${l.name}</span>`).join("")+"<span>Cerchio pieno: scelti all'inizio · cerchio vuoto: aggiunti · puntini: a piedi fino alla stazione</span>";}
+renderLegend();
+function activate(key){document.querySelectorAll(".card").forEach(c=>c.classList.toggle("active",c.id==="s"+key));
+  const c=document.getElementById("s"+key);if(c)c.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});}
+
+/* posizione: tocco sulla mappa */
+let placing=false;
+const mapbox=document.getElementById("mapbox"),placebar=document.getElementById("placebar");
+function setPlacing(on){placing=on;placebar.hidden=!on;mapbox.classList.toggle("placing",on);if(on)mapbox.scrollIntoView({block:"center"});}
+document.getElementById("f-pick").addEventListener("click",()=>setPlacing(true));
+document.getElementById("placecancel").addEventListener("click",()=>setPlacing(false));
+svg.addEventListener("click",e=>{if(!placing)return;const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+  const m=svg.getScreenCTM();if(!m)return;const p=pt.matrixTransform(m.inverse()),ll=unxy(p.x,p.y);
+  document.getElementById("f-loc").value=`${ll.lat.toFixed(5)}, ${ll.lng.toFixed(5)}`;tempPin=ll;setPlacing(false);renderMap();
+  document.getElementById("f-loc").scrollIntoView({block:"center"});setMsg("Posizione presa dalla mappa: controlla che il punto + sia giusto.","ok");});
+
+/* lettura del link */
+function parseCoords(t){t=(t||"").trim();if(!t)return null;let m;
+  const tryP=(a,b)=>{a=parseFloat(a);b=parseFloat(b);return a>51.2&&a<51.8&&b>-0.6&&b<0.4?{lat:a,lng:b}:null;};
+  if((m=t.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/)))return tryP(m[1],m[2]);
+  if((m=t.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/)))return tryP(m[1],m[2]);
+  if((m=t.match(/[?&](?:q|query|ll|destination)=(-?\d+\.\d+)(?:,|%2C)\s*(-?\d+\.\d+)/i)))return tryP(m[1],m[2]);
+  if((m=t.match(/^(-?\d+\.\d+)\s*[,; ]\s*(-?\d+\.\d+)$/)))return tryP(m[1],m[2]);
+  return null;}
+function parseLink(raw){let u;try{u=new URL(raw.trim());}catch(e){return null;}
+  if(!/^https?:$/.test(u.protocol))return null;
+  const h=u.hostname,q=u.searchParams,out={url:u.href};
+  if(/booking\./.test(h)){out.src="Booking";const m=u.pathname.match(/\/hotel\/[a-z]{2}\/([^/.]+)/);
+    if(m)out.name=m[1].replace(/-/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+    const a=q.get("group_adults")||q.get("req_adults");if(a)out.div=+a;}
+  else if(/airbnb\./.test(h)){out.src="Airbnb";const a=q.get("adults")||q.get("guests");if(a)out.div=+a;}
+  else if(/expedia|hotels\.com/.test(h))out.src="Expedia";
+  else if(/vrbo/.test(h))out.src="Vrbo";
+  else out.src=h.replace(/^www\./,"");
+  const c=parseCoords(raw);if(c)out.coords=c;
+  return out;}
+const fUrl=document.getElementById("f-url"),fName=document.getElementById("f-name"),fDiv=document.getElementById("f-div"),fLoc=document.getElementById("f-loc");
+fUrl.addEventListener("change",()=>{const r=parseLink(fUrl.value);if(!r){setMsg("Il link non sembra valido: deve iniziare con https://","err");return;}
+  if(r.name&&!fName.value)fName.value=r.name;
+  if(r.div&&r.div>=2&&r.div<=6)fDiv.value=String(r.div);
+  if(r.coords&&!fLoc.value){fLoc.value=`${r.coords.lat}, ${r.coords.lng}`;tempPin=r.coords;renderMap();}
+  setMsg(r.src==="Airbnb"&&!fName.value?"Airbnb non mette il nome nel link: scrivilo tu.":`Annuncio ${r.src} riconosciuto.`,"ok");});
+fLoc.addEventListener("change",()=>{const c=parseCoords(fLoc.value);tempPin=c;renderMap();
+  if(fLoc.value&&!c)setMsg("Coordinate non riconosciute: usa il formato 51.5030, -0.0180 (zona di Londra).","err");});
+function setMsg(t,cls){const m=document.getElementById("f-msg");m.textContent=t;m.className="msg "+(cls||"");}
+
+const clean=a=>({name:a.name,url:a.url,src:a.src,lat:a.lat,lng:a.lng,price:a.price??null,div:a.div,note:a.note||"",createdBy:a.createdBy||null,createdAt:a.createdAt||Date.now()});
+function saveLocal(){store.set("o2listings",JSON.stringify(state.added));}
+function loadLocal(){try{const a=JSON.parse(store.get("o2listings")||"[]");state.added=Array.isArray(a)?a:[];}catch(e){state.added=[];}
+  items().forEach(p=>{const s=store.get("o2price"+p.key);if(s)state.prices[p.key]=parseFloat(s);});}
+
+document.getElementById("addform").addEventListener("submit",async e=>{e.preventDefault();
+  const r=parseLink(fUrl.value);if(!r){setMsg("Inserisci un link valido che inizi con https://","err");fUrl.focus();return;}
+  const name=fName.value.trim();if(!name){setMsg("Scrivi un nome per l'alloggio.","err");fName.focus();return;}
+  const c=parseCoords(fLoc.value);if(!c){setMsg("Indica la posizione: tocca la mappa o incolla le coordinate.","err");fLoc.focus();return;}
+  const tot=parseFloat(document.getElementById("f-total").value);
+  const a={name:name.slice(0,80),url:r.url,src:r.src,lat:c.lat,lng:c.lng,price:tot>0?Math.round(tot/2*100)/100:null,div:+fDiv.value||3,note:document.getElementById("f-note").value.trim().slice(0,160),createdBy:state.me,createdAt:Date.now()};
+  const btn=document.getElementById("f-submit");btn.disabled=true;
+  try{
+    if(db){const ref=await db.collection("listings").add(clean(a));a.id=ref.id;if(!state.added.some(z=>z.id===a.id))state.added.push(a);}
+    else{a.id="l"+Date.now().toString(36);state.added.push(a);saveLocal();}
+    state.prices["u_"+a.id]=a.price;
+    e.target.reset();fDiv.value="3";tempPin=null;renderAll();setMsg(`${a.name} aggiunto alla lista.`,"ok");
+    setTimeout(()=>activate("u_"+a.id),60);
+  }catch(err){setMsg("Non sono riuscita a salvarlo: serve l'accesso alla pagina per aggiungere alloggi.","err");}
+  finally{btn.disabled=false;}
+});
+
+async function removeListing(key){const a=state.added.find(z=>"u_"+z.id===key);if(!a)return;
+  try{if(db)await db.doc("listings/"+a.id).delete();
+    state.added=state.added.filter(z=>z!==a);delete state.prices[key];if(!db)saveLocal();renderAll();}
+  catch(e){alertCard(key,"Non rimosso: serve l'accesso alla pagina.");}}
+function alertCard(key,t){const s=document.getElementById("pp"+key);if(s)s.textContent=t;}
+
+function renderAll(){renderCards();renderMap();renderVotes();}
+
+loadLocal();renderAll();
+if(/^#s[\w-]+$/.test(location.hash))setTimeout(()=>activate(location.hash.slice(2)),80);
+
+/* dati condivisi: funzione Netlify /api/data */
+(async()=>{
+  const vstatus=document.getElementById("vstatus");
+  const getCode=()=>store.get("o2code")||"";
+  async function post(body){
+    for(let attempt=0;attempt<2;attempt++){
+      const r=await fetch("/api/data",{method:"POST",headers:{"content-type":"application/json","x-edit-code":getCode()},body:JSON.stringify(body)});
+      if(r.status===401){const c=window.prompt("Codice del gruppo per modificare la pagina:");if(!c)throw new Error("code");store.set("o2code",c.trim());continue;}
+      if(!r.ok)throw new Error("http "+r.status);
+      const d=await r.json();applyRemote(d);return d;
+    }
+    throw new Error("code");
+  }
+  function applyRemote(d){
+    if(!d||!Array.isArray(d.listings))return;
+    state.added=d.listings.filter(a=>isFinite(a.lat)&&isFinite(a.lng)&&/^https?:\/\//.test(a.url)).map(a=>({...a,name:String(a.name),note:String(a.note||"")}));
+    BASE.forEach(b=>{const v=d.prices&&d.prices[b.key];state.prices[b.key]=typeof v==="number"?v:b.price;});
+    state.added.forEach(a=>{state.prices["u_"+a.id]=a.price;});
+    state.votes={};Object.entries(d.votes||{}).forEach(([k,v])=>{state.votes[k]=String(v);state.names[k]=k;});
+    const f=document.activeElement&&document.activeElement.closest&&document.activeElement.closest(".card");
+    if(f){renderMap();renderVotes();updatePrices();}else renderAll();
+  }
+  async function pull(){try{const r=await fetch("/api/data",{cache:"no-store"});if(r.ok)applyRemote(await r.json());return r.ok;}catch(e){return false;}}
+
+  /* nome per il voto */
+  const panel=document.querySelector("#voto .panel");
+  const wrap=document.createElement("div");wrap.className="field";
+  wrap.innerHTML='<label for="f-voter">Il tuo nome</label><input id="f-voter" type="text" maxlength="30" placeholder="Es. Grazia">';
+  panel.insertBefore(wrap,panel.firstChild);
+  const vin=document.getElementById("f-voter");
+  vin.value=store.get("o2name")||"";
+  const setMe=()=>{const n=vin.value.replace(/[\/]/g,"").trim();state.me=n||null;store.set("o2name",n);
+    vstatus.textContent=n?"Scegli il tuo alloggio preferito.":"Scrivi il tuo nome per votare.";renderVotes();};
+  vin.addEventListener("change",setMe);
+
+  const ok=await pull();
+  if(!ok){vstatus.textContent="Database non raggiungibile: modifiche salvate solo su questo dispositivo.";return;}
+  db={
+    doc:path=>{const i=path.indexOf("/"),col=path.slice(0,i),id=path.slice(i+1);return{
+      set:async data=>{
+        if(col==="prices")return post({op:"price",key:id.slice(1),value:data.value});
+        if(col==="listings")return post({op:"update",id,listing:data});
+        if(col==="votes")return post({op:"vote",voter:id,choice:data.choice});},
+      delete:async()=>post({op:"remove",id})};},
+    collection:()=>({add:async data=>{const d=await post({op:"add",listing:data});return{id:d.newId};}})
+  };
+  setMe();
+  setInterval(()=>{if(!document.hidden)pull();},20000);
+  document.addEventListener("visibilitychange",()=>{if(!document.hidden)pull();});
+})();
+</script>
+</body></html>
