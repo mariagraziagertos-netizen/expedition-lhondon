@@ -1,7 +1,7 @@
 import { getStore } from "@netlify/blobs";
 
 const KEY = "state";
-const empty = () => ({ listings: [], prices: {}, votes: {} });
+const empty = () => ({ listings: [], prices: {}, votes: {}, removedBase: [] });
 const json = (d, s = 200) =>
   new Response(JSON.stringify(d), { status: s, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 const str = (v, n) => String(v ?? "").slice(0, n);
@@ -66,6 +66,17 @@ export default async (req) => {
       const voter = str(b.voter, 30).trim();
       if (!voter) return json({ error: "voter" }, 400);
       if (b.choice == null) delete state.votes[voter]; else state.votes[voter] = str(b.choice, 60);
+      break;
+    }
+    case "removeBase": {
+      const k = str(b.key, 40);
+      state.removedBase = state.removedBase || [];
+      if (!state.removedBase.includes(k)) state.removedBase.push(k);
+      for (const v in state.votes) if (state.votes[v] === k) delete state.votes[v];
+      break;
+    }
+    case "restoreBase": {
+      state.removedBase = (state.removedBase || []).filter((k) => k !== str(b.key, 40));
       break;
     }
     default:
