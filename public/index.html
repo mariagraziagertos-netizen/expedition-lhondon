@@ -165,6 +165,7 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
   <h2 class="sec">Alloggi</h2>
   <p class="lead">Prima i cinque di partenza, poi quelli aggiunti, ordinati per vicinanza all'O2.</p>
   <div class="cards" id="cards"></div>
+  <p class="note" id="restore" hidden></p>
 </div></section>
 
 <section class="block gut" id="aggiungi"><div class="inner">
@@ -367,7 +368,7 @@ const citymapper=(p,dest,name)=>`https://citymapper.com/directions?startcoord=${
 (()=>{const d=Math.ceil((new Date("2027-02-27T00:00:00+01:00")-new Date())/864e5);
   document.getElementById("cd").textContent=d>0?`${d} giorni`:d===0?"Oggi":"Fatto";})();
 
-const state={prices:{},votes:{},me:null,names:{},added:[]};
+const state={prices:{},votes:{},me:null,names:{},added:[],removed:new Set()};
 BASE.forEach(b=>state.prices[b.key]=b.price);
 let db=null,user=null;
 
@@ -375,7 +376,7 @@ function items(){
   const add=state.added.map(a=>({key:"u_"+a.id,docId:a.id,base:false,name:a.name,url:a.url,src:a.src||"Annuncio",lat:a.lat,lng:a.lng,div:a.div||3,note:a.note,
     area:"Aggiunto dal gruppo",tags:[]})).sort((x,y)=>km(x,O2)-km(y,O2));
   add.forEach(a=>{const v=state.added.find(z=>"u_"+z.id===a.key);if(!(a.key in state.prices)||state.prices[a.key]==null)state.prices[a.key]=v&&v.price>0?v.price:null;});
-  return BASE.concat(add);
+  return BASE.filter(b=>!state.removed.has(b.key)).concat(add);
 }
 const divOf=p=>p.div||3;
 
@@ -412,7 +413,7 @@ function renderCards(){
         ${legHTML("Verso il centro",p,CENTRO,"Trafalgar Square, London",p.cen)}</div>
       ${p.note?`<p class="note">${esc(p.note)}</p>`:""}
       <div class="links"><a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">Apri annuncio ${esc(p.src)}</a>
-        ${p.base?"":`<button type="button" class="btn danger" data-del="${esc(p.key)}">Rimuovi</button><span data-confirm="${esc(p.key)}" hidden>Rimuovere? <button type="button" class="btn danger" data-yes="${esc(p.key)}">Sì</button> <button type="button" class="btn" data-no="${esc(p.key)}">No</button></span>`}</div>`;
+        ${`<button type="button" class="btn danger" data-del="${esc(p.key)}">Rimuovi</button><span data-confirm="${esc(p.key)}" hidden>Rimuovere? <button type="button" class="btn danger" data-yes="${esc(p.key)}">Sì</button> <button type="button" class="btn" data-no="${esc(p.key)}">No</button></span>`}</div>`;
     cards.appendChild(el);
     const inp=el.querySelector("input");
     inp.addEventListener("input",()=>{const v=parseFloat(inp.value);state.prices[p.key]=v>0?v:null;updatePrices();});
@@ -573,7 +574,8 @@ function setMsg(t,cls){const m=document.getElementById("f-msg");m.textContent=t;
 
 const clean=a=>({name:a.name,url:a.url,src:a.src,lat:a.lat,lng:a.lng,price:a.price??null,div:a.div,note:a.note||"",createdBy:a.createdBy||null,createdAt:a.createdAt||Date.now()});
 function saveLocal(){store.set("o2listings",JSON.stringify(state.added));}
-function loadLocal(){try{const a=JSON.parse(store.get("o2listings")||"[]");state.added=Array.isArray(a)?a:[];}catch(e){state.added=[];}
+function loadLocal(){try{state.removed=new Set(JSON.parse(store.get("o2removed")||"[]"));}catch(e){}
+  try{const a=JSON.parse(store.get("o2listings")||"[]");state.added=Array.isArray(a)?a:[];}catch(e){state.added=[];}
   items().forEach(p=>{const s=store.get("o2price"+p.key);if(s)state.prices[p.key]=parseFloat(s);});}
 
 document.getElementById("addform").addEventListener("submit",async e=>{e.preventDefault();
@@ -593,13 +595,24 @@ document.getElementById("addform").addEventListener("submit",async e=>{e.prevent
   finally{btn.disabled=false;}
 });
 
-async function removeListing(key){const a=state.added.find(z=>"u_"+z.id===key);if(!a)return;
+async function removeListing(key){
+  if(BASE.some(b=>b.key===key)){state.removed.add(key);renderAll();
+    try{if(db)await db.doc("removed/"+key).set({at:Date.now()});else store.set("o2removed",JSON.stringify([...state.removed]));}
+    catch(e){state.removed.delete(key);renderAll();}
+    return;}
+  const a=state.added.find(z=>"u_"+z.id===key);if(!a)return;
   try{if(db)await db.doc("listings/"+a.id).delete();
     state.added=state.added.filter(z=>z!==a);delete state.prices[key];if(!db)saveLocal();renderAll();}
   catch(e){alertCard(key,"Non rimosso: serve l'accesso alla pagina.");}}
 function alertCard(key,t){const s=document.getElementById("pp"+key);if(s)s.textContent=t;}
 
-function renderAll(){renderCards();renderMap();renderVotes();}
+function renderRestore(){const el=document.getElementById("restore"),r=BASE.filter(b=>state.removed.has(b.key));
+  el.hidden=!r.length;if(!r.length)return;
+  el.innerHTML=`Rimossi: ${r.map(b=>esc(b.name)).join(", ")} <button type="button" class="btn" id="restoreall">Ripristina</button>`;}
+document.getElementById("restore").addEventListener("click",async e=>{if(!e.target.closest("#restoreall"))return;
+  const keys=[...state.removed];state.removed.clear();renderAll();
+  if(db){for(const k of keys){try{await db.doc("removed/"+k).delete();}catch(err){}}}else store.set("o2removed","[]");});
+function renderAll(){renderRestore();renderCards();renderMap();renderVotes();}
 
 loadLocal();renderAll();
 if(/^#s[\w-]+$/.test(location.hash))setTimeout(()=>activate(location.hash.slice(2)),80);
@@ -622,6 +635,7 @@ if(/^#s[\w-]+$/.test(location.hash))setTimeout(()=>activate(location.hash.slice(
     state.added=d.listings.filter(a=>isFinite(a.lat)&&isFinite(a.lng)&&/^https?:\/\//.test(a.url)).map(a=>({...a,name:String(a.name),note:String(a.note||"")}));
     BASE.forEach(b=>{const v=d.prices&&d.prices[b.key];state.prices[b.key]=typeof v==="number"?v:b.price;});
     state.added.forEach(a=>{state.prices["u_"+a.id]=a.price;});
+    state.removed=new Set(d.removedBase||[]);
     state.votes={};Object.entries(d.votes||{}).forEach(([k,v])=>{state.votes[k]=String(v);state.names[k]=k;});
     const f=document.activeElement&&document.activeElement.closest&&document.activeElement.closest(".card");
     if(f){renderMap();renderVotes();updatePrices();}else renderAll();
@@ -646,8 +660,9 @@ if(/^#s[\w-]+$/.test(location.hash))setTimeout(()=>activate(location.hash.slice(
       set:async data=>{
         if(col==="prices")return post({op:"price",key:id.slice(1),value:data.value});
         if(col==="listings")return post({op:"update",id,listing:data});
-        if(col==="votes")return post({op:"vote",voter:id,choice:data.choice});},
-      delete:async()=>post({op:"remove",id})};},
+        if(col==="votes")return post({op:"vote",voter:id,choice:data.choice});
+        if(col==="removed")return post({op:"removeBase",key:id});},
+      delete:async()=>col==="removed"?post({op:"restoreBase",key:id}):post({op:"remove",id})};},
     collection:()=>({add:async data=>{const d=await post({op:"add",listing:data});return{id:d.newId};}})
   };
   setMe();
