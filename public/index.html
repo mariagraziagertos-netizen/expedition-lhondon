@@ -134,6 +134,30 @@ td a:hover{text-decoration:underline}
 .nstat.ok{color:var(--win);border-color:color-mix(in srgb,var(--win) 40%,transparent)}
 .nstat.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
 .nshort{font-size:13px;font-weight:600}.nshort.ok{color:var(--win)}.nshort.warn{color:var(--warn)}
+.vcol{display:none!important}
+.bagtop{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.bagprog{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;min-width:220px;flex:1}
+.bagbar{flex:1;max-width:280px;height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.bagbar i{display:block;height:100%;width:0;background:var(--win);border-radius:5px;transition:width .3s}
+.bag{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+@media (max-width:620px){.bag{grid-template-columns:1fr}}
+.bagcat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.bagcat h3{margin:0;font-family:var(--f-display);font-size:16px;display:flex;justify-content:space-between;align-items:baseline}
+.bagcat h3 small{font:600 12px var(--f-mono);color:var(--muted)}
+.bagcat ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.bagcat li{display:flex;align-items:flex-start;gap:6px;border-bottom:1px solid var(--line);padding:6px 0}
+.bagcat li:last-child{border-bottom:0}
+.bagcat label{flex:1;display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;min-width:0}
+.bagcat input[type=checkbox]{width:18px;height:18px;flex:none;margin-top:1px;accent-color:var(--win)}
+.bagcat li.done span{color:var(--muted);text-decoration:line-through}
+.bagdel{flex:none;background:none;border:0;color:var(--muted);font-size:18px;line-height:1;padding:0 4px;cursor:pointer;border-radius:4px}
+.bagdel:hover,.bagdel:focus-visible{color:var(--rail);outline:none}
+.bagadd{display:flex;gap:8px;margin-top:4px}
+.bagadd input{flex:1;font-size:14px;padding:6px 10px}
+@media (prefers-reduced-motion:reduce){.bagbar i{transition:none}}
+
+.herobtn{display:inline-flex;align-items:center;gap:8px;margin-top:18px;background:#c2306a;color:#fff;text-decoration:none;font:700 15px var(--f-display);padding:10px 18px;border-radius:999px;box-shadow:0 2px 10px rgba(194,48,106,.35)}
+.herobtn:hover,.herobtn:focus-visible{background:#a82659;outline:2px solid #ffd3e2;outline-offset:2px}
 .tip{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
 .tip h3{margin:0 0 4px;font-family:var(--f-display);font-size:16px}
 .tip p{margin:0;font-size:14px;color:var(--muted)}
@@ -145,6 +169,7 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
   <div class="roundel"><i></i><b>Underground</b></div>
   <h1>Expedition L’Hondon Feb 27</h1>
   <p>Mappa degli alloggi, confronto prezzi</p>
+  <a class="herobtn" href="/mg/">Alloggi di MG <span aria-hidden="true">→</span></a>
   <div class="kpis">
     <div>Partenza<strong id="cd">–</strong></div>
     <div>Notti<strong>2</strong></div>
@@ -153,7 +178,7 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
 </div></header>
 
 <nav class="gut" aria-label="Sezioni"><div class="inner">
-  <a href="#mappa">Mappa</a><a href="#alloggi">Alloggi</a><a href="#aggiungi">Aggiungi</a><a href="#confronto">Confronto</a><a href="#voto" id="navvoto">Vota</a><a href="#info">Info utili</a>
+  <a href="#mappa">Mappa</a><a href="#alloggi">Alloggi</a><a href="#aggiungi">Aggiungi</a><a href="#confronto">Confronto</a><a href="#valigia">Valigia</a><a href="#info">Info utili</a><a href="/mg/">MG</a>
 </div></nav>
 
 <main>
@@ -210,7 +235,7 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
   <p class="note">I tempi con l'asterisco sono stime calcolate sulla rete della mappa: controlla l'itinerario su Maps o Citymapper.</p>
 </div></section>
 
-<section class="block gut" id="voto"><div class="inner">
+<section class="block gut" id="voto" hidden><div class="inner">
   <h2 class="sec">Vota</h2>
   <p class="lead">Un voto a testa, puoi cambiarlo quando vuoi.</p>
   <div class="panel">
@@ -218,6 +243,20 @@ footer{padding-block:28px 40px;font-size:12px;color:var(--muted)}
     <div id="vres" style="display:flex;flex-direction:column;gap:10px"></div>
     <p class="status" id="vstatus">Scrivi il tuo nome per votare.</p>
   </div>
+</div></section>
+
+<section class="block gut" id="valigia"><div class="inner">
+  <h2 class="sec">Valigia</h2>
+  <p class="lead">Elenco per due notti a Londra a fine febbraio, con concerto all'O2. Spunta quello che hai messo in valigia e aggiungi le tue cose. Le spunte restano salvate solo su questo dispositivo: ognuno prepara la sua valigia.</p>
+  <div class="bagtop">
+    <div class="bagprog"><div class="bagbar"><i id="bag-bar"></i></div><span id="bag-count">0 di 0 pronti</span></div>
+    <div class="links">
+      <button type="button" class="btn" id="bag-uncheck">Togli tutte le spunte</button>
+      <button type="button" class="btn" id="bag-reset">Ripristina elenco iniziale</button>
+      <span id="bag-confirm" hidden><span id="bag-confirm-txt"></span> <button type="button" class="btn danger" id="bag-yes">Sì</button> <button type="button" class="btn" id="bag-no">No</button></span>
+    </div>
+  </div>
+  <div class="bag" id="bag"></div>
 </div></section>
 
 <section class="block gut" id="info"><div class="inner">
@@ -451,6 +490,7 @@ function renderCards(){
   const list=items(),cards=document.getElementById("cards");
   document.getElementById("kcount").textContent=list.length;
   cards.innerHTML="";
+  if(!list.length)cards.innerHTML='<p class="lead">Nessun alloggio ancora. Aggiungi il primo dalla sezione <a href="#aggiungi">Aggiungi</a>: comparirà qui, sulla mappa e nel confronto.</p>';
   list.forEach((p,i)=>{
     const near=nearest(p);
     const tags=[p.src,...p.tags].map(t=>`<span class="tag">${esc(t)}</span>`).join("")+(p.base?"":`<span class="tag new">aggiunto</span><span class="tag">÷ ${divOf(p)}</span>`);
@@ -685,6 +725,47 @@ document.getElementById("f-find").addEventListener("click",async()=>{const q=doc
   catch(e){setMsg("Ricerca non disponibile in questo momento: tocca la mappa o incolla le coordinate.","err");}
   finally{b.disabled=false;}});
 document.getElementById("f-addr").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("f-find").click();}});
+
+/* valigia */
+(()=>{
+const BAGKEY="o2bag";
+const BAGCATS=[
+ {id:"doc",name:"Documenti e soldi",items:["Passaporto (la carta d'identità non basta)","ETA approvata (screenshot o stampa)","Carta d'imbarco o app della compagnia aerea","Biglietti del concerto nell'app","Carta contactless, una a testa","Seconda carta di riserva","Qualche sterlina in contanti","Indirizzo e conferma dell'alloggio","Tessera sanitaria TEAM e assicurazione viaggio"]},
+ {id:"vest",name:"Vestiti",items:["Giacca calda impermeabile","Maglioni o felpe","Pantaloni","Magliette","Intimo e calze per 3 giorni","Pigiama","Scarpe comode e impermeabili","Sciarpa, guanti e berretto","Ombrello pieghevole","Outfit per il concerto"]},
+ {id:"o2",name:"Per il concerto",items:["Borsa piccola, massimo formato A4","Borraccia pieghevole vuota","Tappi per le orecchie","Power bank carica","Giacca leggera da tenere addosso (il deposito è a pagamento)"]},
+ {id:"el",name:"Elettronica",items:["Telefono e caricabatterie","Adattatore per presa inglese tipo G","Power bank","Cuffie","Cavo di ricarica di scorta"]},
+ {id:"bagno",name:"Bagno e cura",items:["Spazzolino e dentifricio","Liquidi in flaconi piccoli nella busta trasparente (controlla i limiti dell'aeroporto)","Deodorante","Spazzola o pettine","Trucchi e struccante","Medicinali personali","Cerotti e antidolorifici","Fazzoletti e gel igienizzante"]},
+ {id:"varie",name:"Varie",items:["Borsa di tela pieghevole","Snack per il viaggio","Lucchetto per la valigia","Penna"]}
+];
+const preset=[];BAGCATS.forEach(c=>c.items.forEach((t,i)=>preset.push({id:c.id+"-"+i,cat:c.id,text:t})));
+let st={checked:{},custom:[],removed:[]};
+try{const s=JSON.parse(localStorage.getItem(BAGKEY)||"null");if(s&&typeof s==="object")st={checked:s.checked||{},custom:Array.isArray(s.custom)?s.custom:[],removed:Array.isArray(s.removed)?s.removed:[]};}catch(e){}
+const save=()=>{try{localStorage.setItem(BAGKEY,JSON.stringify(st));}catch(e){}};
+const all=()=>preset.filter(x=>!st.removed.includes(x.id)).concat(st.custom);
+const box=document.getElementById("bag");
+function render(){
+  const items=all(),done=items.filter(x=>st.checked[x.id]).length;
+  document.getElementById("bag-count").textContent=`${done} di ${items.length} pronti`;
+  document.getElementById("bag-bar").style.width=items.length?(done/items.length*100)+"%":"0";
+  box.innerHTML=BAGCATS.map(c=>{const its=items.filter(x=>x.cat===c.id),d=its.filter(x=>st.checked[x.id]).length;
+    return `<div class="bagcat"><h3>${esc(c.name)} <small>${d}/${its.length}</small></h3>
+      <ul>${its.map(x=>`<li class="${st.checked[x.id]?"done":""}"><label><input type="checkbox" data-id="${esc(x.id)}" ${st.checked[x.id]?"checked":""}><span>${esc(x.text)}</span></label><button type="button" class="bagdel" data-del="${esc(x.id)}" aria-label="Rimuovi ${esc(x.text)}">×</button></li>`).join("")}</ul>
+      <form class="bagadd" data-cat="${c.id}"><input type="text" maxlength="80" placeholder="Aggiungi a ${esc(c.name.toLowerCase())}" aria-label="Aggiungi a ${esc(c.name)}"><button type="submit" class="btn">Aggiungi</button></form></div>`;}).join("");
+}
+box.addEventListener("change",e=>{const id=e.target.dataset.id;if(!id)return;if(e.target.checked)st.checked[id]=true;else delete st.checked[id];save();render();});
+box.addEventListener("click",e=>{const b=e.target.closest("[data-del]");if(!b)return;const id=b.dataset.del;
+  if(id.startsWith("c"))st.custom=st.custom.filter(x=>x.id!==id);else st.removed.push(id);delete st.checked[id];save();render();});
+box.addEventListener("submit",e=>{e.preventDefault();const f=e.target.closest(".bagadd");if(!f)return;const inp=f.querySelector("input"),t=inp.value.trim();if(!t)return;
+  st.custom.push({id:"c"+Date.now().toString(36),cat:f.dataset.cat,text:t.slice(0,80)});save();render();
+  const again=box.querySelector(`.bagadd[data-cat="${f.dataset.cat}"] input`);if(again)again.focus();});
+let pending=null;const conf=document.getElementById("bag-confirm");
+const ask=(what,txt)=>{pending=what;document.getElementById("bag-confirm-txt").textContent=txt;conf.hidden=false;};
+document.getElementById("bag-uncheck").addEventListener("click",()=>ask("uncheck","Togliere tutte le spunte?"));
+document.getElementById("bag-reset").addEventListener("click",()=>ask("reset","Tornare all'elenco iniziale? Le cose aggiunte e le spunte si perdono."));
+document.getElementById("bag-no").addEventListener("click",()=>{conf.hidden=true;pending=null;});
+document.getElementById("bag-yes").addEventListener("click",()=>{if(pending==="uncheck")st.checked={};if(pending==="reset")st={checked:{},custom:[],removed:[]};conf.hidden=true;pending=null;save();render();});
+render();
+})();
 
 loadLocal();renderAll();
 if(/^#s[\w-]+$/.test(location.hash))setTimeout(()=>activate(location.hash.slice(2)),80);
