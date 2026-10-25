@@ -24,7 +24,9 @@ function cleanListing(l) {
 
 export default async (req) => {
   const store = getStore({ name: "expedition-lhondon", consistency: "strong" });
-  const state = (await store.get(KEY, { type: "json" })) || empty();
+  const space = (new URL(req.url).searchParams.get("space") || "").replace(/[^a-z0-9]/gi, "").slice(0, 20);
+  const key = space ? KEY + "-" + space : KEY;
+  const state = (await store.get(key, { type: "json" })) || empty();
 
   if (req.method === "GET") return json(state);
   if (req.method !== "POST") return json({ error: "method" }, 405);
@@ -83,7 +85,7 @@ export default async (req) => {
       return json({ error: "op" }, 400);
   }
 
-  await store.setJSON(KEY, state);
+  await store.setJSON(key, state);
   return json({ ...state, newId });
 };
 
